@@ -41,6 +41,8 @@ This repository has been prepared from `codex-template-kit` with project-specifi
   - `./.agents/skills/backend-bugfix/scripts/verify.sh`
 - CI triage helper:
   - `./.agents/skills/gh-fix-ci/scripts/collect_failed_checks.py --pr <number>`
+- Environment bootstrap (recommended):
+  - `bash codex/scripts/bootstrap_dev_environment.sh`
 
 ## Command approval policy (current)
 - `git push` (feature branches) -> `allow`
