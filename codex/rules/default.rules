@@ -27,33 +27,8 @@ prefix_rule(
 # Keep destructive operations gated
 prefix_rule(
     pattern = ["git", "push"],
-    decision = "allow",
-    justification = "Allow normal feature-branch pushes without approval friction.",
-)
-
-prefix_rule(
-    pattern = ["git", "push", "origin", ["main", "master"]],
-    decision = "prompt",
-    justification = "Pushing directly to protected branches requires explicit confirmation.",
-    match = [
-        "git push origin main",
-        "git push origin master",
-    ],
-    not_match = [
-        "git push origin feature/codex-setup",
-    ],
-)
-
-prefix_rule(
-    pattern = ["git", "push", ["-u", "--set-upstream"], "origin", ["main", "master"]],
-    decision = "prompt",
-    justification = "Setting upstream to protected branches requires explicit confirmation.",
-)
-
-prefix_rule(
-    pattern = ["git", "push", "origin", ["HEAD:main", "HEAD:master"]],
-    decision = "prompt",
-    justification = "Refspec pushes to protected branches require explicit confirmation.",
+    decision = "forbidden",
+    justification = "Push is human-only in this repository. Ask a human to run push.",
 )
 
 prefix_rule(

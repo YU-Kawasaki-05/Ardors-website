@@ -29,6 +29,8 @@
 - Ask before adding new production dependencies or introducing a new framework baseline.
 - Avoid destructive commands unless explicitly requested.
 - Prefer read-only investigation before editing.
+- Create commits only on `feature/*` branches.
+- Do not run `git push`; push is human-operated in this repository.
 
 ## Directory notes
 - `docs/00_共通/`: decision logs and cross-phase records.

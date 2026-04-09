@@ -5,7 +5,7 @@ import shlex
 import subprocess
 import sys
 
-PROTECTED_BRANCHES = {"main", "master"}
+FEATURE_BRANCH_PREFIX = "feature/"
 
 
 def deny(reason: str) -> None:
@@ -42,6 +42,10 @@ def get_current_branch() -> str:
     if branch in ("", "HEAD"):
         return ""
     return branch
+
+
+def is_feature_branch(branch: str) -> bool:
+    return bool(branch) and branch.startswith(FEATURE_BRANCH_PREFIX)
 
 
 def looks_like_dangerous_rm(command_lower: str) -> bool:
@@ -87,18 +91,15 @@ def main() -> int:
         deny("`git clean -fdx` is blocked because it deletes untracked and ignored files.")
 
     if len(argv) >= 2 and argv[0] == "git" and argv[1] == "push":
-        if any(opt in {"--force", "-f", "--force-with-lease"} for opt in argv[2:]):
-            deny("Force-like git push options are blocked.")
+        deny("`git push` is human-only in this repository. Ask a human to push from the terminal.")
 
+    if len(argv) >= 2 and argv[0] == "git" and argv[1] == "commit":
         current_branch = get_current_branch()
-        if current_branch in PROTECTED_BRANCHES:
-            # `git push` or `git push origin` on protected branches is too ambiguous.
-            non_option_args = [token for token in argv[2:] if not token.startswith("-")]
-            if len(non_option_args) <= 1:
-                deny(
-                    "On protected branch, use explicit refspec (example: `git push origin main`) "
-                    "so permission rules can review it."
-                )
+        if not is_feature_branch(current_branch):
+            deny(
+                "Commits are allowed only on `feature/*` branches. "
+                "Create/switch branch first (example: `git switch -c feature/<topic>`)."
+            )
 
     if len(argv) >= 3 and argv[0] == "sudo" and argv[1] == "rm" and any(opt in {"-rf", "-fr"} for opt in argv[2:]):
         deny("`sudo rm -rf` is blocked.")
