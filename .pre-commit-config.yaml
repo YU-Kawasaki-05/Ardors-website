@@ -17,6 +17,12 @@ repos:
         args: [--markdown-linebreak-ext=md]
   - repo: local
     hooks:
+      - id: require-feature-branch-for-commit
+        name: Require feature/* branch for commit
+        entry: .githooks/pre_commit_require_feature_branch.sh
+        language: script
+        stages: [pre-commit]
+        pass_filenames: false
       - id: no-push-to-protected-branch
         name: Block push to protected branches
         entry: .githooks/pre_push_protect_main.sh

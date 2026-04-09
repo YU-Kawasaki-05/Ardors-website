@@ -108,14 +108,14 @@ bash codex/scripts/install_claude_commands_as_prompts.sh
 ## 4. 安全ポリシー（実際の挙動）
 
 ### 4.1 Codex Rules
-- `git push`（feature系）: `allow`
-- `git push origin main|master`: `prompt`
+- `git push`（全ブランチ）: `forbidden`（人間実行専用）
 - `git push --force/-f/--force-with-lease`: `forbidden`
 - `rm`: `prompt`
 - `sudo rm -rf`: `forbidden`
 
 ### 4.2 Hook追加ガード
-- 保護ブランチ (`main/master`) 上で曖昧 push（`git push`, `git push origin`）は `deny`
+- `git push` は常時 `deny`（Codexからのpushを禁止）
+- `git commit` は `feature/*` ブランチでのみ許可
 - `git reset --hard` は `deny`
 - `git clean -fdx` は `deny`
 
@@ -137,9 +137,10 @@ bash codex/scripts/install_claude_commands_as_prompts.sh
 
 補足:
 - `no-commit-to-branch` は `main/master` での commit を止めます。
+- `require-feature-branch-for-commit` は `feature/*` 以外での commit を止めます。
 - 保守作業で全体検査だけしたい場合は次を使用:
 ```bash
-SKIP=no-commit-to-branch ~/.local/bin/pre-commit run --all-files
+SKIP=no-commit-to-branch,require-feature-branch-for-commit ~/.local/bin/pre-commit run --all-files
 ```
 
 ## 6. GitHub リモート運用
@@ -147,11 +148,18 @@ SKIP=no-commit-to-branch ~/.local/bin/pre-commit run --all-files
 現在の推奨:
 - `origin` は SSH (`git@github.com:...`) を使用。
 - HTTPS 認証問題で詰まりにくい。
+- 運用ルール: コミットは `feature/*`、pushは人間が実行。
 
 確認:
 ```bash
 git remote -v
 git branch -vv
+```
+
+### 6.1 人間向け push 手順
+```bash
+git switch feature/<topic>
+git push -u origin feature/<topic>
 ```
 
 ## 7. トラブルシュート
@@ -176,5 +184,5 @@ python3 -m pip install --user pre-commit
 
 1. `.claude/commands` を更新
 2. `bash codex/scripts/install_claude_commands_as_prompts.sh`
-3. `SKIP=no-commit-to-branch ~/.local/bin/pre-commit run --all-files`
+3. `SKIP=no-commit-to-branch,require-feature-branch-for-commit ~/.local/bin/pre-commit run --all-files`
 4. 影響範囲を `docs/00_共通/codex/` 配下ドキュメントへ反映

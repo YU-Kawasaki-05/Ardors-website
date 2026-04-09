@@ -45,16 +45,17 @@ This repository has been prepared from `codex-template-kit` with project-specifi
   - `bash codex/scripts/bootstrap_dev_environment.sh`
 
 ## Command approval policy (current)
-- `git push` (feature branches) -> `allow`
-- `git push origin main|master` -> `prompt`
+- `git push` (all branches) -> `forbidden` (human-only)
 - `git push --force` -> `forbidden`
+- `git commit` -> allowed only on `feature/*` branch (PreToolUse hook)
 - `rm *` -> `prompt`
 - `sudo rm -rf *` -> `forbidden`
-- protected branch plain push (`git push` / `git push origin` while on `main|master`) -> `deny` by hook, requires explicit refspec
+- `git push` -> `deny` by hook (Codex cannot push by design)
 
 ## Local git guardrails (pre-commit)
 - Config file: `/.pre-commit-config.yaml`
 - Hooks introduced:
+  - `require-feature-branch-for-commit` for `feature/*` commit-only policy
   - `no-commit-to-branch` for `main/master` protection
   - `detect-private-key`
   - `check-merge-conflict`, `check-yaml`, `check-toml`
