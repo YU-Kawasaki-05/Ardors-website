@@ -1,6 +1,7 @@
 /** @file Root application layout. */
 import type { Metadata } from 'next'
 
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 import { DEFAULT_OG_IMAGE, SITE_URL } from '@/components/JsonLd'
 import Footer from '@/components/layout/Footer'
 import Header from '@/components/layout/Header'
@@ -41,6 +42,7 @@ export default async function RootLayout({
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
+        <GoogleAnalytics />
       </body>
     </html>
   )
