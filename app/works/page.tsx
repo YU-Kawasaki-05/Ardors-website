@@ -1,26 +1,28 @@
 /**
- * @file Works list page — SCR-04 (FR-04, BR-11, AC-04-01, AC-04-02)
- *
- * Section order:
- *   1. Page header  — タイトル + 件数
- *   2. WorksFilter  — アウトカムフィルタ (Client Component, AC-04-01)
- *   3. Work cards   — 公開済み実績一覧 (BR-11)
- *   4. CTABlock     — ページ末尾 CTA
+ * @file Works list page — SCR-04 (FR-04, FR-08, BR-20, BR-21)
  */
 import Link from 'next/link'
 
+import { localizeHref, type Locale } from '@/config/i18n'
 import { CTABlock } from '@/components/ui'
-import { WORKS } from '@/data/works'
+import { getMessages } from '@/lib/i18n'
+import { getRequestLocale } from '@/lib/i18n/request'
 import type { Work } from '@/types/works'
 
 import { WorksFilter } from './_components/WorksFilter'
 
-// ─── Work card ────────────────────────────────────────────────────────────────
-
-function WorkCard({ work }: { work: Work }) {
+function WorkCard({
+  locale,
+  work,
+  detailLabel,
+}: {
+  locale: Locale
+  work: Work
+  detailLabel: string
+}) {
   return (
     <Link
-      href={`/works/${work.slug}`}
+      href={localizeHref(locale, `/works/${work.slug}`)}
       className="group flex flex-col rounded-2xl border border-zinc-200 bg-white p-6 transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
     >
       <div className="mb-3 flex items-center justify-between gap-2">
@@ -50,62 +52,59 @@ function WorkCard({ work }: { work: Work }) {
         className="mt-4 self-end text-sm font-medium text-indigo-500 transition-transform group-hover:translate-x-0.5"
         aria-hidden="true"
       >
-        詳細を見る →
+        {detailLabel} →
       </span>
     </Link>
   )
 }
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
 
 type WorksPageProps = {
   searchParams: Promise<{ outcome?: string }>
 }
 
 export default async function WorksPage({ searchParams }: WorksPageProps) {
+  const locale = await getRequestLocale()
+  const t = getMessages(locale).works
   const { outcome } = await searchParams
   const currentOutcome = outcome ?? null
 
-  // BR-11: 未公開を除外
-  const publishedWorks = WORKS.filter((w) => w.published)
-
-  // 全アウトカムを収集（フィルタバー用）
-  const allOutcomes = [...new Set(publishedWorks.flatMap((w) => w.outcomes))]
-
-  // AC-04-01: アウトカムフィルタ適用
+  const publishedWorks = t.items.filter((work) => work.published)
+  const allOutcomes = [...new Set(publishedWorks.flatMap((work) => work.outcomes))]
   const filteredWorks = currentOutcome
-    ? publishedWorks.filter((w) => w.outcomes.includes(currentOutcome))
+    ? publishedWorks.filter((work) => work.outcomes.includes(currentOutcome))
     : publishedWorks
 
   return (
     <>
-      {/* 1. Page header */}
       <section className="border-b border-zinc-100 bg-white py-16 sm:py-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <p className="text-sm font-semibold uppercase tracking-widest text-indigo-600">Works</p>
-          <h1 className="mt-3 text-4xl font-bold tracking-tight text-zinc-900 sm:text-5xl">
-            実績一覧
-          </h1>
-          <p className="mt-5 max-w-xl text-lg leading-relaxed text-zinc-600">
-            これまで担当したプロジェクトをご紹介します。成果軸でフィルタして、課題に近い実績をご覧ください。
+          <p className="text-sm font-semibold uppercase tracking-widest text-indigo-600">
+            {t.eyebrow}
           </p>
+          <h1 className="mt-3 text-4xl font-bold tracking-tight text-zinc-900 sm:text-5xl">
+            {t.title}
+          </h1>
+          <p className="mt-5 max-w-xl text-lg leading-relaxed text-zinc-600">{t.description}</p>
         </div>
       </section>
 
-      {/* 2. Filter (AC-04-01, AC-04-02) */}
       <section className="border-b border-zinc-100 py-6">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <WorksFilter outcomes={allOutcomes} currentOutcome={currentOutcome} />
+          <WorksFilter
+            outcomes={allOutcomes}
+            currentOutcome={currentOutcome}
+            basePath={localizeHref(locale, '/works')}
+            labels={t.filter}
+          />
         </div>
       </section>
 
-      {/* 3. Work cards */}
       <section className="py-12">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           {filteredWorks.length > 0 ? (
             <>
               <p className="mb-6 text-sm text-zinc-400">
-                {filteredWorks.length} 件
+                {filteredWorks.length} {t.countLabel}
                 {currentOutcome && (
                   <span>
                     {' '}
@@ -115,26 +114,28 @@ export default async function WorksPage({ searchParams }: WorksPageProps) {
               </p>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-2">
                 {filteredWorks.map((work) => (
-                  <WorkCard key={work.slug} work={work} />
+                  <WorkCard
+                    key={work.slug}
+                    locale={locale}
+                    work={work}
+                    detailLabel={t.detailLink}
+                  />
                 ))}
               </div>
             </>
           ) : (
-            <p className="py-16 text-center text-sm text-zinc-400">
-              該当する実績が見つかりませんでした。
-            </p>
+            <p className="py-16 text-center text-sm text-zinc-400">{t.empty}</p>
           )}
         </div>
       </section>
 
-      {/* 4. CTABlock */}
       <section className="pb-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <CTABlock
-            heading="似た課題をお持ちですか"
-            description="実績に近い案件のご相談はお気軽にどうぞ。まずは状況を聞かせてください。"
-            primaryCTA={{ label: '相談する', href: '/contact' }}
-            secondaryCTA={{ label: 'サービスを見る', href: '/services' }}
+            heading={t.cta.heading}
+            description={t.cta.description}
+            primaryCTA={{ label: t.cta.primaryCTA, href: localizeHref(locale, '/contact') }}
+            secondaryCTA={{ label: t.cta.secondaryCTA, href: localizeHref(locale, '/services') }}
           />
         </div>
       </section>

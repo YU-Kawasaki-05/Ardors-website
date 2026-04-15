@@ -1,33 +1,24 @@
 /**
- * @file Services page — SCR-02 (FR-02, BR-02, AC-02-01)
- *
- * Section order:
- *   1. Page header  — タイトル + 概要
- *   2. Service cards — data/services.ts から一覧表示
- *   3. Next pages   — 実績一覧・プロフィールへの推奨リンク
- *   4. CTABlock     — ページ末尾 CTA
+ * @file Services page — SCR-02 (FR-02, FR-08, BR-20, BR-21)
  */
 import Link from 'next/link'
 
+import { localizeHref, type Locale } from '@/config/i18n'
 import { CTABlock } from '@/components/ui'
-import { SERVICES } from '@/data/services'
 import type { ServiceItem } from '@/data/services'
+import { getMessages } from '@/lib/i18n'
+import { getRequestLocale } from '@/lib/i18n/request'
 
-// ─── Service card ─────────────────────────────────────────────────────────────
-
-function ServiceCard({ service }: { service: ServiceItem }) {
+function ServiceCard({ locale, service }: { locale: Locale; service: ServiceItem }) {
   return (
     <article className="flex flex-col rounded-2xl border border-zinc-200 bg-white p-8">
-      {/* Header */}
       <div className="mb-5 border-b border-zinc-100 pb-5">
         <h2 className="text-xl font-semibold text-zinc-900">{service.name}</h2>
         <p className="mt-1 text-sm text-indigo-600">{service.tagline}</p>
       </div>
 
-      {/* Description */}
       <p className="text-sm leading-relaxed text-zinc-600">{service.description}</p>
 
-      {/* Deliverables */}
       <ul className="mt-5 space-y-2">
         {service.deliverables.map((item) => (
           <li key={item} className="flex items-start gap-2 text-sm text-zinc-700">
@@ -39,11 +30,10 @@ function ServiceCard({ service }: { service: ServiceItem }) {
         ))}
       </ul>
 
-      {/* Price note + CTA */}
       <div className="mt-auto pt-6">
         <p className="mb-4 text-xs text-zinc-400">{service.priceNote}</p>
         <Link
-          href={service.ctaHref}
+          href={localizeHref(locale, service.ctaHref)}
           className="inline-flex h-10 items-center justify-center rounded-xl bg-indigo-600 px-5 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
         >
           {service.ctaLabel}
@@ -53,60 +43,44 @@ function ServiceCard({ service }: { service: ServiceItem }) {
   )
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+export default async function ServicesPage() {
+  const locale = await getRequestLocale()
+  const t = getMessages(locale).services
 
-export default function ServicesPage() {
   return (
     <>
-      {/* 1. Page header */}
       <section className="border-b border-zinc-100 bg-white py-16 sm:py-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <p className="text-sm font-semibold uppercase tracking-widest text-indigo-600">
-            Services
+            {t.eyebrow}
           </p>
           <h1 className="mt-3 text-4xl font-bold tracking-tight text-zinc-900 sm:text-5xl">
-            提供サービス
+            {t.title}
           </h1>
-          <p className="mt-5 max-w-xl text-lg leading-relaxed text-zinc-600">
-            Web 開発・デザイン・技術コンサルを一気通貫で担当します。
-            課題の大きさに合わせて、単発スポットから継続支援まで柔軟に対応します。
-          </p>
+          <p className="mt-5 max-w-xl text-lg leading-relaxed text-zinc-600">{t.description}</p>
         </div>
       </section>
 
-      {/* 2. Service cards */}
       <section className="py-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            {SERVICES.map((service) => (
-              <ServiceCard key={service.id} service={service} />
+            {t.items.map((service) => (
+              <ServiceCard key={service.id} locale={locale} service={service} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* 3. Next page recommendations (FR-09) */}
       <section className="py-4 pb-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <h2 className="mb-6 text-sm font-semibold uppercase tracking-widest text-zinc-400">
-            関連ページ
+            {t.nextPagesHeading}
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {[
-              {
-                label: '実績一覧',
-                description: '過去の案件と成果をご覧ください。',
-                href: '/works',
-              },
-              {
-                label: 'プロフィール',
-                description: '担当者の経歴・スキルを紹介しています。',
-                href: '/profile',
-              },
-            ].map((page) => (
+            {t.nextPages.map((page) => (
               <Link
                 key={page.href}
-                href={page.href}
+                href={localizeHref(locale, page.href)}
                 className="group flex items-center justify-between gap-4 rounded-2xl border border-zinc-200 bg-zinc-50 px-6 py-5 transition-colors hover:border-zinc-300 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
               >
                 <div>
@@ -125,14 +99,13 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* 4. CTABlock — BR-02: CTA 2 つ目はカード内、ここが集約 CTA */}
       <section className="pb-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <CTABlock
-            heading="どのサービスが合うか迷ったら"
-            description="ご状況をお聞きした上で、最適な進め方をご提案します。まずはお気軽にどうぞ。"
-            primaryCTA={{ label: '相談する', href: '/contact' }}
-            secondaryCTA={{ label: '実績を見る', href: '/works' }}
+            heading={t.cta.heading}
+            description={t.cta.description}
+            primaryCTA={{ label: t.cta.primaryCTA, href: localizeHref(locale, '/contact') }}
+            secondaryCTA={{ label: t.cta.secondaryCTA, href: localizeHref(locale, '/works') }}
           />
         </div>
       </section>
