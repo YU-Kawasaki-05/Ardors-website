@@ -2,8 +2,10 @@
  * @file Top page — SCR-01 (FR-01, FR-08, BR-20, BR-21)
  */
 import Link from 'next/link'
+import type { Metadata } from 'next'
 
 import { localizeHref, type Locale } from '@/config/i18n'
+import JsonLd, { buildPageMetadata, toAbsoluteUrl, toJsonLdLanguage } from '@/components/JsonLd'
 import { CTABlock, TrustBlock } from '@/components/ui'
 import { getMessages } from '@/lib/i18n'
 import { getRequestLocale } from '@/lib/i18n/request'
@@ -18,6 +20,18 @@ type NextPageCard = {
   label: string
   description: string
   href: string
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale()
+  const t = getMessages(locale).home
+
+  return buildPageMetadata({
+    locale,
+    pathname: '/',
+    title: locale === 'ja' ? 'トップ' : 'Home',
+    description: t.hero.description,
+  })
 }
 
 function Hero({ locale }: { locale: Locale }) {
@@ -125,9 +139,20 @@ export default async function HomePage() {
   const locale = await getRequestLocale()
   const t = getMessages(locale).home
   const trustLabels = getMessages(locale).trustBlock
+  const websiteUrl = toAbsoluteUrl(localizeHref(locale, '/'))
 
   return (
     <>
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          name: 'Ardors',
+          url: websiteUrl,
+          description: t.hero.description,
+          inLanguage: toJsonLdLanguage(locale),
+        }}
+      />
       <Hero locale={locale} />
       <EntryBranches locale={locale} />
 

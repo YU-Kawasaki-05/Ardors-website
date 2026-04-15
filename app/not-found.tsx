@@ -2,10 +2,30 @@
  * @file 404 Not Found page — SCR-12 (FR-08, BR-20, BR-21)
  */
 import Link from 'next/link'
+import type { Metadata } from 'next'
 
 import { localizeHref } from '@/config/i18n'
+import { buildPageMetadata } from '@/components/JsonLd'
 import { getMessages } from '@/lib/i18n'
 import { getRequestLocale } from '@/lib/i18n/request'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale()
+  const t = getMessages(locale).notFound
+
+  return {
+    ...buildPageMetadata({
+      locale,
+      pathname: '/',
+      title: t.title,
+      description: t.description,
+    }),
+    robots: {
+      index: false,
+      follow: false,
+    },
+  }
+}
 
 export default async function NotFound() {
   const locale = await getRequestLocale()

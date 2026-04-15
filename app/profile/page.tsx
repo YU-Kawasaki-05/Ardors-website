@@ -1,18 +1,48 @@
 /**
  * @file Profile page — SCR-03 (FR-03, FR-08, BR-20, BR-21)
  */
+import type { Metadata } from 'next'
+
 import { localizeHref } from '@/config/i18n'
+import JsonLd, { buildPageMetadata, toAbsoluteUrl } from '@/components/JsonLd'
 import { CTABlock } from '@/components/ui'
 import { getMessages } from '@/lib/i18n'
 import { getRequestLocale } from '@/lib/i18n/request'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale()
+  const t = getMessages(locale).profile
+
+  return buildPageMetadata({
+    locale,
+    pathname: '/profile',
+    title: t.data.name,
+    description: t.data.bio,
+  })
+}
 
 export default async function ProfilePage() {
   const locale = await getRequestLocale()
   const t = getMessages(locale).profile
   const profile = t.data
+  const profileUrl = toAbsoluteUrl(localizeHref(locale, '/profile'))
+  const sameAs = [profile.githubHref, profile.noteHref].filter(
+    (link): link is string => typeof link === 'string' && link.length > 0,
+  )
 
   return (
     <>
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'Person',
+          name: profile.name,
+          url: profileUrl,
+          description: profile.bio,
+          jobTitle: profile.title,
+          sameAs,
+        }}
+      />
       <section className="border-b border-zinc-100 bg-white py-16 sm:py-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <p className="text-sm font-semibold uppercase tracking-widest text-indigo-600">

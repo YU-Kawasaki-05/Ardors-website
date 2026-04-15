@@ -2,9 +2,18 @@
  * @file Work detail page — SCR-05 (FR-05, FR-08, BR-20, BR-21)
  */
 import Link from 'next/link'
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
 import { localizeHref } from '@/config/i18n'
+import JsonLd, {
+  DEFAULT_OG_IMAGE,
+  SITE_NAME,
+  SITE_URL,
+  buildPageMetadata,
+  toAbsoluteUrl,
+  toJsonLdLanguage,
+} from '@/components/JsonLd'
 import { CTABlock } from '@/components/ui'
 import { WORKS } from '@/data/works'
 import { getMessages } from '@/lib/i18n'
@@ -16,6 +25,35 @@ export function generateStaticParams() {
 
 type WorkDetailPageProps = {
   params: Promise<{ slug: string }>
+}
+
+function normalizePublishedDate(value: string): string {
+  return /^\d{4}-\d{2}$/.test(value) ? `${value}-01` : value
+}
+
+export async function generateMetadata({ params }: WorkDetailPageProps): Promise<Metadata> {
+  const locale = await getRequestLocale()
+  const t = getMessages(locale).works
+  const { slug } = await params
+  const work = t.items.find((item) => item.slug === slug && item.published)
+
+  if (!work) {
+    return buildPageMetadata({
+      locale,
+      pathname: '/works',
+      title: locale === 'ja' ? '実績詳細' : 'Work Detail',
+      description: locale === 'ja' ? '実績詳細ページです。' : 'Work detail page.',
+    })
+  }
+
+  return buildPageMetadata({
+    locale,
+    pathname: `/works/${work.slug}`,
+    title: work.title,
+    description: work.summary ?? work.result,
+    openGraphType: 'article',
+    image: work.thumbnail ?? DEFAULT_OG_IMAGE,
+  })
 }
 
 export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
@@ -34,9 +72,35 @@ export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
     )
     .filter((candidate) => candidate !== undefined)
     .slice(0, 2)
+  const workUrl = toAbsoluteUrl(localizeHref(locale, `/works/${work.slug}`))
+  const imageUrl = toAbsoluteUrl(work.thumbnail ?? DEFAULT_OG_IMAGE)
+  const keywords = [...work.outcomes, ...work.techStack]
 
   return (
     <>
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'Article',
+          headline: work.title,
+          description: work.summary ?? work.result,
+          image: [imageUrl],
+          datePublished: normalizePublishedDate(work.publishedAt),
+          inLanguage: toJsonLdLanguage(locale),
+          articleSection: work.category,
+          keywords: keywords.join(', '),
+          mainEntityOfPage: workUrl,
+          author: {
+            '@type': 'Person',
+            name: 'Yuu Kawasaki',
+          },
+          publisher: {
+            '@type': 'Organization',
+            name: SITE_NAME,
+            url: SITE_URL,
+          },
+        }}
+      />
       <div className="border-b border-zinc-100 bg-white">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <Link
