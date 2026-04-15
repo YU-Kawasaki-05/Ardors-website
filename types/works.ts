@@ -1,8 +1,8 @@
 /**
  * @file Work (case study) type definitions shared by ARD-10 (list) and ARD-11 (detail).
  *
- * The base `Work` type covers list view needs.
- * ARD-11 extends it with the full detail fields (challenge / response / result).
+ * `Work`       — base fields used by the list page.
+ * `WorkDetail` — extends Work with full case study content (ARD-11).
  */
 
 export type Work = {
@@ -22,4 +22,21 @@ export type Work = {
   publishedAt: string
   /** Whether this work is visible on the public list (BR-11). */
   published: boolean
+}
+
+/**
+ * Full case study used by the detail page (ARD-11).
+ * Extends the base Work type with narrative sections and metadata.
+ */
+export type WorkDetail = Work & {
+  /** 課題: situation / problem the client faced. */
+  problem: string
+  /** 対応: how the problem was addressed. */
+  solution: string
+  /** 結果: measurable outcomes achieved. */
+  result: string
+  /** Technologies and tools used in this project. */
+  techStack: string[]
+  /** Slugs of 0–2 related works to surface as "次に読む" (FR-09). */
+  nextWorks?: string[]
 }
