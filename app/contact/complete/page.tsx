@@ -1,17 +1,17 @@
-/** @file 問い合わせ完了ページ — SCR-08 (FR-21, AC-21-01) */
+/** @file Contact complete page — SCR-08 (FR-21, FR-08, BR-20, BR-21). */
 import Link from 'next/link'
 
-const NEXT_LINKS = [
-  { label: 'トップへ', href: '/' },
-  { label: '実績を見る', href: '/works' },
-  { label: 'SaaS 構想', href: '/saas' },
-]
+import { localizeHref } from '@/config/i18n'
+import { getMessages } from '@/lib/i18n'
+import { getRequestLocale } from '@/lib/i18n/request'
 
-export default function ContactCompletePage() {
+export default async function ContactCompletePage() {
+  const locale = await getRequestLocale()
+  const t = getMessages(locale).contactComplete
+
   return (
     <section className="flex flex-1 flex-col items-center justify-center py-24 text-center">
       <div className="mx-auto max-w-lg px-4 sm:px-6">
-        {/* Check icon */}
         <div
           className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-indigo-50"
           aria-hidden="true"
@@ -31,28 +31,18 @@ export default function ContactCompletePage() {
           </svg>
         </div>
 
-        <h1 className="text-2xl font-bold text-zinc-900 sm:text-3xl">
-          お問い合わせありがとうございます
-        </h1>
+        <h1 className="text-2xl font-bold text-zinc-900 sm:text-3xl">{t.title}</h1>
+        <p className="mt-4 text-base leading-relaxed text-zinc-500">{t.description}</p>
 
-        <p className="mt-4 text-base leading-relaxed text-zinc-500">
-          内容を確認のうえ、
-          <strong className="text-zinc-700">2営業日以内</strong>
-          にご返信いたします。
-          <br />
-          しばらくお待ちください。
-        </p>
-
-        {/* Next action links — AC-21-01 */}
-        <nav aria-label="次のアクション" className="mt-10">
+        <nav aria-label={t.nextHeading} className="mt-10">
           <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
-            次におすすめのページ
+            {t.nextHeading}
           </p>
           <ul className="flex flex-wrap justify-center gap-2">
-            {NEXT_LINKS.map((link) => (
+            {t.nextLinks.map((link) => (
               <li key={link.href}>
                 <Link
-                  href={link.href}
+                  href={localizeHref(locale, link.href)}
                   className="inline-flex h-9 items-center rounded-full border border-zinc-200 px-4 text-sm text-zinc-600 transition-colors hover:border-zinc-300 hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
                 >
                   {link.label}

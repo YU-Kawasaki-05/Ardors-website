@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 
 import Footer from '@/components/layout/Footer'
 import Header from '@/components/layout/Header'
+import { getRequestLocale } from '@/lib/i18n/request'
 
 import './globals.css'
 
@@ -11,13 +12,15 @@ export const metadata: Metadata = {
   description: 'Ardors website project scaffold',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const locale = await getRequestLocale()
+
   return (
-    <html lang="ja" className="h-full antialiased">
+    <html lang={locale} className="h-full antialiased">
       <body className="flex min-h-full flex-col">
         <Header />
         <main className="flex-1">{children}</main>

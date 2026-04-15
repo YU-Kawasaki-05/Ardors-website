@@ -1,55 +1,83 @@
-/** @file Global footer with navigation and external links (FR-08, FR-31). */
+/** @file Global footer with localized nav and language switch (FR-08, FR-31). */
 import Link from 'next/link'
 
+import { localizeHref, switchLocalePathname } from '@/config/i18n'
 import { getFooterItemsByGroup } from '@/config/navigation'
+import { getMessages } from '@/lib/i18n'
+import { getRequestLocale, getRequestPathWithSearch } from '@/lib/i18n/request'
 
-/** FR-31: GitHub profile link. Update when the public URL is confirmed. */
+/** FR-31: GitHub profile link. */
 const GITHUB_URL = 'https://github.com/YU-Kawasaki-05'
 
-export default function Footer() {
+function splitPathAndSearch(pathWithSearch: string): { pathname: string; search: string } {
+  const [pathname, search = ''] = pathWithSearch.split('?')
+  return { pathname, search }
+}
+
+function withSearch(pathname: string, search: string): string {
+  return search ? `${pathname}?${search}` : pathname
+}
+
+export default async function Footer() {
+  const locale = await getRequestLocale()
+  const t = getMessages(locale)
   const mainItems = getFooterItemsByGroup('main')
   const legalItems = getFooterItemsByGroup('legal')
   const currentYear = new Date().getFullYear()
 
+  const { pathname, search } = splitPathAndSearch(await getRequestPathWithSearch())
+  const jaHref = withSearch(switchLocalePathname(pathname, 'ja'), search)
+  const enHref = withSearch(switchLocalePathname(pathname, 'en'), search)
+
   return (
     <footer className="border-t border-zinc-200 bg-zinc-50">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        {/* Brand + language toggle */}
         <div className="flex items-start justify-between pb-8 pt-10">
           <Link
-            href="/"
+            href={localizeHref(locale, '/')}
             className="rounded-md text-base font-semibold tracking-[0.08em] text-zinc-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
           >
-            ARDORS
+            {t.common.brand}
           </Link>
 
-          {/* Language toggle — placeholder until ARD-17 */}
-          <button
-            type="button"
-            className="rounded-md border border-zinc-300 px-3 py-2 text-xs font-medium tracking-wide text-zinc-700"
-            aria-label="Language switch — coming soon"
-            aria-disabled="true"
-          >
-            JA / EN
-          </button>
+          <div className="inline-flex rounded-md border border-zinc-300 bg-white p-0.5">
+            <Link
+              href={jaHref}
+              aria-current={locale === 'ja' ? 'page' : undefined}
+              aria-label={t.common.language.switchAria}
+              className={`rounded px-2.5 py-1 text-xs font-semibold transition-colors ${
+                locale === 'ja' ? 'bg-zinc-900 text-white' : 'text-zinc-600 hover:bg-zinc-100'
+              }`}
+            >
+              {t.common.language.ja}
+            </Link>
+            <Link
+              href={enHref}
+              aria-current={locale === 'en' ? 'page' : undefined}
+              aria-label={t.common.language.switchAria}
+              className={`rounded px-2.5 py-1 text-xs font-semibold transition-colors ${
+                locale === 'en' ? 'bg-zinc-900 text-white' : 'text-zinc-600 hover:bg-zinc-100'
+              }`}
+            >
+              {t.common.language.en}
+            </Link>
+          </div>
         </div>
 
-        {/* Navigation columns */}
         <div className="grid grid-cols-2 gap-8 pb-10 sm:grid-cols-3">
-          {/* Main site navigation */}
           <div>
             <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
-              Navigation
+              {t.footer.navigationHeading}
             </p>
-            <nav aria-label="Footer main navigation">
+            <nav aria-label={t.footer.navigationHeading}>
               <ul className="space-y-2">
                 {mainItems.map((item) => (
                   <li key={item.key}>
                     <Link
-                      href={item.href}
+                      href={localizeHref(locale, item.href)}
                       className="text-sm text-zinc-600 transition-colors hover:text-zinc-900"
                     >
-                      {item.label.ja}
+                      {item.label[locale]}
                     </Link>
                   </li>
                 ))}
@@ -57,20 +85,19 @@ export default function Footer() {
             </nav>
           </div>
 
-          {/* Legal navigation */}
           <div>
             <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
-              Legal
+              {t.footer.legalHeading}
             </p>
-            <nav aria-label="Footer legal navigation">
+            <nav aria-label={t.footer.legalHeading}>
               <ul className="space-y-2">
                 {legalItems.map((item) => (
                   <li key={item.key}>
                     <Link
-                      href={item.href}
+                      href={localizeHref(locale, item.href)}
                       className="text-sm text-zinc-600 transition-colors hover:text-zinc-900"
                     >
-                      {item.label.ja}
+                      {item.label[locale]}
                     </Link>
                   </li>
                 ))}
@@ -78,10 +105,9 @@ export default function Footer() {
             </nav>
           </div>
 
-          {/* External links */}
           <div>
             <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
-              Links
+              {t.footer.linksHeading}
             </p>
             <ul className="space-y-2">
               <li>
@@ -91,7 +117,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-sm text-zinc-600 transition-colors hover:text-zinc-900"
                 >
-                  GitHub
+                  {t.common.github}
                   <span aria-hidden="true">↗</span>
                 </a>
               </li>
@@ -99,9 +125,8 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Copyright */}
         <div className="border-t border-zinc-200 py-6">
-          <p className="text-xs text-zinc-500">© {currentYear} Ardors. All rights reserved.</p>
+          <p className="text-xs text-zinc-500">{t.footer.copyright(currentYear)}</p>
         </div>
       </div>
     </footer>

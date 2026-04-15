@@ -11,13 +11,18 @@ import { useRouter } from 'next/navigation'
 type WorksFilterProps = {
   outcomes: string[]
   currentOutcome: string | null
+  basePath: string
+  labels: {
+    ariaLabel: string
+    all: string
+  }
 }
 
-export function WorksFilter({ outcomes, currentOutcome }: WorksFilterProps) {
+export function WorksFilter({ outcomes, currentOutcome, basePath, labels }: WorksFilterProps) {
   const router = useRouter()
 
   const navigate = (outcome: string | null) => {
-    const url = outcome ? `/works?outcome=${encodeURIComponent(outcome)}` : '/works'
+    const url = outcome ? `${basePath}?outcome=${encodeURIComponent(outcome)}` : basePath
     router.push(url)
   }
 
@@ -27,7 +32,7 @@ export function WorksFilter({ outcomes, currentOutcome }: WorksFilterProps) {
   const btnIdle = 'border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-50'
 
   return (
-    <nav aria-label="アウトカムフィルタ">
+    <nav aria-label={labels.ariaLabel}>
       <ul className="flex flex-wrap gap-2">
         <li>
           <button
@@ -36,7 +41,7 @@ export function WorksFilter({ outcomes, currentOutcome }: WorksFilterProps) {
             className={`${btnBase} ${currentOutcome === null ? btnActive : btnIdle}`}
             aria-pressed={currentOutcome === null}
           >
-            すべて
+            {labels.all}
           </button>
         </li>
         {outcomes.map((outcome) => (

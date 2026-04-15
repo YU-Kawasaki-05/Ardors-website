@@ -1,23 +1,17 @@
 /**
- * @file Work detail page — SCR-05 (FR-05, BR-10, BR-11, AC-05-01, AC-05-02)
- *
- * Section order:
- *   1. Header  — タイトル / カテゴリ / 日付 / tech stack
- *   2. Problem — 課題 (BR-10, AC-05-01)
- *   3. Solution— 対応 (BR-10, AC-05-01)
- *   4. Result  — 結果 (BR-10, AC-05-01)
- *   5. Next    — 次に読む実績 (FR-09, AC-05-01)
- *   6. CTA     — 相談導線
+ * @file Work detail page — SCR-05 (FR-05, FR-08, BR-20, BR-21)
  */
-import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
 
+import { localizeHref } from '@/config/i18n'
 import { CTABlock } from '@/components/ui'
 import { WORKS } from '@/data/works'
+import { getMessages } from '@/lib/i18n'
+import { getRequestLocale } from '@/lib/i18n/request'
 
-// Pre-generate routes for published works at build time.
 export function generateStaticParams() {
-  return WORKS.filter((w) => w.published).map((w) => ({ slug: w.slug }))
+  return WORKS.filter((work) => work.published).map((work) => ({ slug: work.slug }))
 }
 
 type WorkDetailPageProps = {
@@ -25,35 +19,35 @@ type WorkDetailPageProps = {
 }
 
 export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
+  const locale = await getRequestLocale()
+  const t = getMessages(locale).works
   const { slug } = await params
-  const work = WORKS.find((w) => w.slug === slug)
+  const work = t.items.find((item) => item.slug === slug)
 
-  // AC-05-02: 未公開または存在しないスラッグ → 404
   if (!work || !work.published) {
     notFound()
   }
 
-  // Resolve "next works" slugs to objects (published only)
   const nextWorkItems = (work.nextWorks ?? [])
-    .map((s) => WORKS.find((w) => w.slug === s && w.published))
-    .filter((w) => w !== undefined)
+    .map((nextSlug) =>
+      t.items.find((candidate) => candidate.slug === nextSlug && candidate.published),
+    )
+    .filter((candidate) => candidate !== undefined)
     .slice(0, 2)
 
   return (
     <>
-      {/* Back link */}
       <div className="border-b border-zinc-100 bg-white">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <Link
-            href="/works"
+            href={localizeHref(locale, '/works')}
             className="inline-flex items-center gap-1 py-4 text-sm text-zinc-500 transition-colors hover:text-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
           >
-            <span aria-hidden="true">←</span> 実績一覧に戻る
+            <span aria-hidden="true">←</span> {t.detail.backToList}
           </Link>
         </div>
       </div>
 
-      {/* 1. Header */}
       <section className="border-b border-zinc-100 bg-white py-12 sm:py-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
@@ -70,7 +64,6 @@ export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
             <p className="mt-4 text-lg leading-relaxed text-zinc-600">{work.summary}</p>
           )}
 
-          {/* Tech stack */}
           {work.techStack.length > 0 && (
             <ul className="mt-6 flex flex-wrap gap-2">
               {work.techStack.map((tech) => (
@@ -83,7 +76,6 @@ export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
             </ul>
           )}
 
-          {/* Outcome tags */}
           <ul className="mt-3 flex flex-wrap gap-2">
             {work.outcomes.map((tag) => (
               <li key={tag}>
@@ -96,10 +88,8 @@ export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
         </div>
       </section>
 
-      {/* 2–4. Case study body (AC-05-01: 課題・対応・結果 の 3 セクション) */}
       <article className="py-14">
         <div className="mx-auto max-w-4xl space-y-14 px-4 sm:px-6 lg:px-8">
-          {/* 課題 */}
           <section>
             <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-zinc-900">
               <span
@@ -108,12 +98,11 @@ export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
               >
                 1
               </span>
-              課題
+              {t.detail.problem}
             </h2>
             <p className="leading-relaxed text-zinc-700">{work.problem}</p>
           </section>
 
-          {/* 対応 */}
           <section>
             <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-zinc-900">
               <span
@@ -122,12 +111,11 @@ export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
               >
                 2
               </span>
-              対応
+              {t.detail.solution}
             </h2>
             <p className="leading-relaxed text-zinc-700">{work.solution}</p>
           </section>
 
-          {/* 結果 */}
           <section>
             <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-zinc-900">
               <span
@@ -136,30 +124,29 @@ export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
               >
                 3
               </span>
-              結果
+              {t.detail.result}
             </h2>
             <p className="leading-relaxed text-zinc-700">{work.result}</p>
           </section>
         </div>
       </article>
 
-      {/* 5. Next works (FR-09, AC-05-01) */}
       {nextWorkItems.length > 0 && (
         <section className="border-t border-zinc-100 py-14">
           <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
             <h2 className="mb-6 text-sm font-semibold uppercase tracking-widest text-zinc-400">
-              次に読む実績
+              {t.detail.nextHeading}
             </h2>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {nextWorkItems.map((next) => (
+              {nextWorkItems.map((nextWork) => (
                 <Link
-                  key={next!.slug}
-                  href={`/works/${next!.slug}`}
+                  key={nextWork.slug}
+                  href={localizeHref(locale, `/works/${nextWork.slug}`)}
                   className="group flex items-center justify-between gap-4 rounded-2xl border border-zinc-200 bg-zinc-50 px-6 py-5 transition-colors hover:border-zinc-300 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
                 >
                   <div>
-                    <p className="text-xs font-medium text-indigo-600">{next!.category}</p>
-                    <p className="mt-0.5 text-sm font-semibold text-zinc-900">{next!.title}</p>
+                    <p className="text-xs font-medium text-indigo-600">{nextWork.category}</p>
+                    <p className="mt-0.5 text-sm font-semibold text-zinc-900">{nextWork.title}</p>
                   </div>
                   <span
                     className="shrink-0 text-zinc-400 transition-transform group-hover:translate-x-0.5 group-hover:text-zinc-600"
@@ -174,14 +161,16 @@ export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
         </section>
       )}
 
-      {/* 6. CTA */}
       <section className="pb-20 pt-6">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <CTABlock
-            heading="似た課題をお持ちですか"
-            description="まずは状況を聞かせてください。最適な進め方をご提案します。"
-            primaryCTA={{ label: '相談する', href: '/contact' }}
-            secondaryCTA={{ label: '実績一覧に戻る', href: '/works' }}
+            heading={t.detail.cta.heading}
+            description={t.detail.cta.description}
+            primaryCTA={{ label: t.detail.cta.primaryCTA, href: localizeHref(locale, '/contact') }}
+            secondaryCTA={{
+              label: t.detail.cta.secondaryCTA,
+              href: localizeHref(locale, '/works'),
+            }}
           />
         </div>
       </section>
