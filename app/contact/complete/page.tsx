@@ -1,9 +1,23 @@
 /** @file Contact complete page — SCR-08 (FR-21, FR-08, BR-20, BR-21). */
 import Link from 'next/link'
+import type { Metadata } from 'next'
 
 import { localizeHref } from '@/config/i18n'
+import { buildPageMetadata } from '@/components/JsonLd'
 import { getMessages } from '@/lib/i18n'
 import { getRequestLocale } from '@/lib/i18n/request'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale()
+  const t = getMessages(locale).contactComplete
+
+  return buildPageMetadata({
+    locale,
+    pathname: '/contact/complete',
+    title: t.title,
+    description: t.description,
+  })
+}
 
 export default async function ContactCompletePage() {
   const locale = await getRequestLocale()

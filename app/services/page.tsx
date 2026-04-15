@@ -2,8 +2,10 @@
  * @file Services page — SCR-02 (FR-02, FR-08, BR-20, BR-21)
  */
 import Link from 'next/link'
+import type { Metadata } from 'next'
 
 import { localizeHref, type Locale } from '@/config/i18n'
+import { buildPageMetadata } from '@/components/JsonLd'
 import { CTABlock } from '@/components/ui'
 import type { ServiceItem } from '@/data/services'
 import { getMessages } from '@/lib/i18n'
@@ -41,6 +43,18 @@ function ServiceCard({ locale, service }: { locale: Locale; service: ServiceItem
       </div>
     </article>
   )
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale()
+  const t = getMessages(locale).services
+
+  return buildPageMetadata({
+    locale,
+    pathname: '/services',
+    title: t.title,
+    description: t.description,
+  })
 }
 
 export default async function ServicesPage() {

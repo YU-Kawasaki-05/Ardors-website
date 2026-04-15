@@ -2,8 +2,10 @@
  * @file Works list page — SCR-04 (FR-04, FR-08, BR-20, BR-21)
  */
 import Link from 'next/link'
+import type { Metadata } from 'next'
 
 import { localizeHref, type Locale } from '@/config/i18n'
+import { buildPageMetadata } from '@/components/JsonLd'
 import { CTABlock } from '@/components/ui'
 import { getMessages } from '@/lib/i18n'
 import { getRequestLocale } from '@/lib/i18n/request'
@@ -60,6 +62,18 @@ function WorkCard({
 
 type WorksPageProps = {
   searchParams: Promise<{ outcome?: string }>
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale()
+  const t = getMessages(locale).works
+
+  return buildPageMetadata({
+    locale,
+    pathname: '/works',
+    title: t.title,
+    description: t.description,
+  })
 }
 
 export default async function WorksPage({ searchParams }: WorksPageProps) {

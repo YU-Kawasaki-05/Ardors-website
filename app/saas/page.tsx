@@ -1,7 +1,10 @@
 /**
  * @file SaaS intro page — SCR-06 (FR-06, FR-08, BR-20, BR-21)
  */
+import type { Metadata } from 'next'
+
 import { localizeHref } from '@/config/i18n'
+import { buildPageMetadata } from '@/components/JsonLd'
 import { CTABlock } from '@/components/ui'
 import { getMessages } from '@/lib/i18n'
 import { getRequestLocale } from '@/lib/i18n/request'
@@ -11,6 +14,18 @@ const STATUS_STYLES = {
   beta: 'bg-blue-50 text-blue-700 border-blue-200',
   live: 'bg-emerald-50 text-emerald-700 border-emerald-200',
 } as const
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale()
+  const t = getMessages(locale).saas
+
+  return buildPageMetadata({
+    locale,
+    pathname: '/saas',
+    title: t.data.name,
+    description: t.data.description,
+  })
+}
 
 export default async function SaasPage() {
   const locale = await getRequestLocale()
