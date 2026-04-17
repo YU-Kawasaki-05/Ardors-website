@@ -1,11 +1,11 @@
 ---
-title: Backlog (P1) — CMS・Note RSS・GA4 拡張
+title: Backlog (P1) — CMS・Note RSS・Search Console
 phase: 04
 sprint: backlog
-updated: 2026-04-13
+updated: 2026-04-17
 ---
 
-# Backlog (P1): CMS・Note RSS・GA4 拡張
+# Backlog (P1): CMS・Note RSS・Search Console
 
 ## 並列ガイド
 
@@ -22,7 +22,7 @@ updated: 2026-04-13
 
 **変更対象ファイル**: `app/notes/page.tsx`（新規）, `lib/note-rss.ts`（新規）
 
-```text
+````text
 [Task Title]
 ARD-30: Note の RSS フィードを取得してブログ記事一覧ページ（/notes）に表示する
 
@@ -50,16 +50,19 @@ Implementation Hints
   const res = await fetch(process.env.NOTE_RSS_URL!, {
     next: { revalidate: 3600 }, // 1 時間ごとに再取得
   })
-  ```
+````
+
 - 取得フィールド: title / link / pubDate / description（抜粋）。
 - NOTE_RSS_URL が未設定の場合はプレースホルダーカード 3 件を表示する（開発環境対応）。
 
 Acceptance Criteria (Done)
+
 - [ ] /notes に Note の記事一覧が表示される
 - [ ] 各記事リンクで Note の元ページへ別タブで遷移する
 - [ ] NOTE_RSS_URL 未設定でもページが壊れない
 - [ ] `pnpm lint` / `pnpm typecheck` が通る
-```
+
+````
 
 ---
 
@@ -99,16 +102,19 @@ Implementation Hints
   ```ts
   export const config = { matcher: ['/admin/:path*'] }
   // /admin/login は除外し、それ以外は Cookie チェック → 未認証なら /admin/login へ
-  ```
+````
+
 - ログアウト: DELETE /api/auth/logout でセッション Cookie を削除。
 
 Acceptance Criteria (Done)
+
 - [ ] 未認証で /admin/cases にアクセスすると /admin/login にリダイレクトされる
 - [ ] 正しい認証情報でログインすると /admin/cases へ遷移する
-- [ ] ログアウト後は /admin/* にアクセスできない
+- [ ] ログアウト後は /admin/\* にアクセスできない
 - [ ] ADMIN_EMAIL / ADMIN_PASSWORD_HASH が .env.example に記載されている
 - [ ] `pnpm lint` / `pnpm typecheck` が通る
-```
+
+````
 
 ---
 
@@ -159,7 +165,7 @@ Acceptance Criteria (Done)
 - [ ] 公開/非公開トグルを操作すると、フロント側の /works に反映される（AC-A2-01）
 - [ ] .env.example にデータストア変数が記載されている
 - [ ] `pnpm lint` / `pnpm typecheck` が通る
-```
+````
 
 ---
 
@@ -167,7 +173,7 @@ Acceptance Criteria (Done)
 
 **変更対象ファイル**: `app/layout.tsx`（verification meta tag）, `public/sitemap.xml`（新規）
 
-```text
+````text
 [Task Title]
 ARD-33: Google Search Console のサイト確認とサイトマップを設定する
 
@@ -198,7 +204,8 @@ Implementation Hints
       // ... 全公開ページ
     ]
   }
-  ```
+````
+
 - robots.ts:
   ```ts
   export default function robots(): MetadataRoute.Robots {
@@ -210,13 +217,19 @@ Implementation Hints
   ```
 - Search Console の確認用 meta タグ:
   ```ts
-  verification: { google: process.env.GOOGLE_SITE_VERIFICATION }
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION
+  }
   ```
 
 Acceptance Criteria (Done)
+
 - [ ] /sitemap.xml にアクセスすると公開ページ一覧が XML で返る
 - [ ] /robots.txt に /admin/ が disallow されている
 - [ ] GOOGLE_SITE_VERIFICATION が設定されると meta タグが注入される
 - [ ] .env.example に GOOGLE_SITE_VERIFICATION= が追記されている
 - [ ] `pnpm lint` / `pnpm typecheck` が通る
+
+```
+
 ```

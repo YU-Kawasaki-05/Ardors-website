@@ -2,7 +2,7 @@
 title: Sprint 5 — セキュリティ強化・品質保証
 phase: 04
 sprint: 5
-updated: 2026-04-13
+updated: 2026-04-17
 ---
 
 # Sprint 5: セキュリティ強化・品質保証
@@ -18,11 +18,11 @@ updated: 2026-04-13
 
 ---
 
-## ARD-20: セキュアヘッダー設定 (BR-40〜43, FR-70)
+## ARD-20: セキュアヘッダー設定 (BR-40〜43, FR-71)
 
 **変更対象ファイル**: `next.config.ts`, `middleware.ts`
 
-```text
+````text
 [Task Title]
 ARD-20: HTTP セキュリティヘッダー（CSP / HSTS 等）を全レスポンスに付与する
 
@@ -31,7 +31,7 @@ Goal
 - Content Security Policy を最小権限原則で設定する。
 
 Context
-- 要件: FR-70（セキュリティ基準）, BR-41（CSP/HSTS 必須）, BR-42（HTTPS 強制）
+- 要件: FR-71（セキュアヘッダー）, BR-42（CSP/HSTS/X-Frame-Options/X-Content-Type-Options 適用）
 - 受入基準: AC-70-01（ヘッダー存在確認）
 
 Scope
@@ -66,15 +66,18 @@ Implementation Hints
       ].join('; '),
     },
   ]
-  ```
+````
+
 - CSP nonce が必要な場合は middleware.ts で生成し、`x-nonce` ヘッダーで渡す。
 - 'unsafe-inline' を style-src に含めるのは Tailwind の都合上許容（将来的に strict-dynamic へ移行可）。
 
 Acceptance Criteria (Done)
+
 - [ ] `curl -I https://preview-url` で X-Content-Type-Options, X-Frame-Options, HSTS が返る
 - [ ] securityheaders.com でグレード A 以上を取得する（手動確認）
 - [ ] `pnpm lint` / `pnpm typecheck` / `pnpm build` が通る
-```
+
+````
 
 ---
 
@@ -118,7 +121,8 @@ Implementation Hints
   export function containsDangerousPattern(input: string): boolean {
     return DANGEROUS_PATTERNS.some((pattern) => pattern.test(input))
   }
-  ```
+````
+
 - route.ts での使用:
   - フィールドごとに `containsDangerousPattern` をチェック。
   - 検出時は 400 + `{ message: 'Invalid input' }` を返す（詳細なパターン名は含まない）。
@@ -126,12 +130,14 @@ Implementation Hints
   ただし `Content-Type: application/json` のみを受け付ける（フォームポストを拒否）。
 
 Acceptance Criteria (Done)
+
 - [ ] `<script>alert(1)</script>` をフォーム送信すると 400 が返る
 - [ ] `SELECT * FROM users` を本文に入れると 400 が返る
 - [ ] 通常のメッセージは正常に送信できる（既存動作を壊さない）
 - [ ] lib/sanitize.ts にテストが書きやすい純粋関数として実装されている
 - [ ] `pnpm lint` / `pnpm typecheck` が通る
-```
+
+````
 
 ---
 
@@ -169,7 +175,8 @@ Implementation Hints
   export default defineConfig({
     test: { environment: 'node', include: ['tests/unit/**/*.test.ts'] }
   })
-  ```
+````
+
 - Playwright 設定:
   ```ts
   // playwright.config.ts
@@ -187,11 +194,13 @@ Implementation Hints
   - /works で存在しないスラッグは 404 になる（AC-05-02）
 
 Acceptance Criteria (Done)
+
 - [ ] `pnpm test` で Vitest が実行され、初期テストがすべて pass する
 - [ ] `pnpm test:e2e` で Playwright が実行され、初期 E2E テストが pass する
 - [ ] CI（GitHub Actions）に test / test:e2e ステップが追加されている
 - [ ] `pnpm lint` / `pnpm typecheck` が通る
-```
+
+````
 
 ---
 
@@ -230,7 +239,7 @@ Acceptance Criteria (Done)
 - [ ] LCP ≤ 2.5s, CLS ≤ 0.1 が Lighthouse で確認できる
 - [ ] すべての `<img>` が `<Image>` に置換されている（または置換不要の理由が PR に明記）
 - [ ] `pnpm lint` / `pnpm typecheck` が通る
-```
+````
 
 ---
 
@@ -238,7 +247,7 @@ Acceptance Criteria (Done)
 
 **変更対象ファイル**: 各 `app/*/page.tsx`, `components/**/*.tsx`（修正箇所のみ）
 
-```text
+````text
 [Task Title]
 ARD-24: WCAG 2.1 AA 準拠のアクセシビリティ監査を実施し、検出した問題を修正する
 
@@ -275,12 +284,16 @@ Implementation Hints
     await page.goto('/contact')
     await checkA11y(page)
   })
-  ```
+````
 
 Acceptance Criteria (Done)
+
 - [ ] Lighthouse Accessibility スコア ≥ 90
 - [ ] axe-core で Critical / Serious の問題がゼロ
 - [ ] Tab キーで全フォームフィールドとリンクを操作できる（AC-75-01）
 - [ ] 各ページに h1 が 1 つある（AC-75-02）
 - [ ] `pnpm lint` / `pnpm typecheck` が通る
+
+```
+
 ```
