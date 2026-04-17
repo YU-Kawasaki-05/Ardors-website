@@ -18,6 +18,7 @@ import { CTABlock } from '@/components/ui'
 import { WORKS } from '@/data/works'
 import { getMessages } from '@/lib/i18n'
 import { getRequestLocale } from '@/lib/i18n/request'
+import WorkDetailViewTracker from './_components/WorkDetailViewTracker'
 
 export function generateStaticParams() {
   return WORKS.filter((work) => work.published).map((work) => ({ slug: work.slug }))
@@ -78,6 +79,7 @@ export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
 
   return (
     <>
+      <WorkDetailViewTracker workSlug={work.slug} workCategory={work.category} />
       <JsonLd
         data={{
           '@context': 'https://schema.org',
