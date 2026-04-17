@@ -2,11 +2,17 @@
 
 /** @file Client-side contact form UI and submit flow — SCR-07 (FR-20). */
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/navigation'
-import { useMemo, useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { localizeHref, type Locale } from '@/config/i18n'
+import {
+  buildContactReachEventParams,
+  buildContactSubmitEventParams,
+  getClientEventContext,
+} from '@/lib/analytics/events'
+import { sendAnalyticsEvent } from '@/lib/analytics/gtag'
 import { getMessages } from '@/lib/i18n'
 import {
   CATEGORIES,
@@ -25,10 +31,12 @@ function FieldError({ message }: { message?: string }) {
 }
 
 export default function ContactForm({ locale }: { locale: Locale }) {
+  const pathname = usePathname()
   const router = useRouter()
   const t = getMessages(locale).contact
   const schema = useMemo(() => getContactSchema(locale), [locale])
   const [serverError, setServerError] = useState<string | null>(null)
+  const hasTrackedReach = useRef(false)
 
   const {
     register,
@@ -37,6 +45,16 @@ export default function ContactForm({ locale }: { locale: Locale }) {
   } = useForm<ContactInput>({
     resolver: zodResolver(schema),
   })
+
+  useEffect(() => {
+    if (hasTrackedReach.current) {
+      return
+    }
+
+    hasTrackedReach.current = true
+    const context = getClientEventContext(pathname)
+    sendAnalyticsEvent('contact_reach', buildContactReachEventParams(context))
+  }, [pathname])
 
   async function onSubmit(data: ContactInput) {
     setServerError(null)
@@ -49,6 +67,13 @@ export default function ContactForm({ locale }: { locale: Locale }) {
       })
 
       if (res.ok) {
+        const context = getClientEventContext(pathname)
+        sendAnalyticsEvent(
+          'contact_submit',
+          buildContactSubmitEventParams(context, {
+            contact_category: data.category,
+          }),
+        )
         router.push(localizeHref(locale, '/contact/complete'))
         return
       }
