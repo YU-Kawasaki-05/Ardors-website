@@ -18,31 +18,49 @@ import {
 
 function applySecurityHeaders(res: NextResponse) {
   const isDevelopment = process.env.NODE_ENV !== 'production'
-  const scriptSrc = isDevelopment
-    ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'" // required by React/Turbopack in development
-    : "script-src 'self' 'unsafe-inline'" // keeps stricter production CSP
-
-  res.headers.set(
-    'Content-Security-Policy',
+  const contentSecurityPolicy = [
+    "default-src 'self'",
     [
-      "default-src 'self'",
-      scriptSrc,
-      "style-src 'self' 'unsafe-inline'", // required for Tailwind CSS
-      "img-src 'self' data: https:",
-      "font-src 'self'",
+      "script-src 'self' 'unsafe-inline'",
+      isDevelopment ? "'unsafe-eval'" : '',
+      'https://www.googletagmanager.com',
+    ]
+      .filter(Boolean)
+      .join(' '),
+    "style-src 'self' 'unsafe-inline'", // required for Tailwind CSS
+    "img-src 'self' data: https:",
+    "font-src 'self'",
+    [
       "connect-src 'self'",
-      "frame-ancestors 'none'",
-    ].join('; '),
-  )
+      'https://www.google-analytics.com',
+      'https://region1.google-analytics.com',
+      isDevelopment ? 'ws://localhost:3000' : '',
+      isDevelopment ? 'ws://127.0.0.1:3000' : '',
+    ]
+      .filter(Boolean)
+      .join(' '),
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+    isDevelopment ? '' : 'upgrade-insecure-requests',
+  ]
+    .filter(Boolean)
+    .join('; ')
 
-  // HTTP Strict Transport Security — 1 year, include subdomains
-  res.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
+  res.headers.set('Content-Security-Policy', contentSecurityPolicy)
+
+  // HTTP Strict Transport Security
+  res.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload')
 
   // Prevent clickjacking
   res.headers.set('X-Frame-Options', 'DENY')
 
   // Prevent MIME type sniffing
   res.headers.set('X-Content-Type-Options', 'nosniff')
+
+  // Legacy XSS filter header for older clients
+  res.headers.set('X-XSS-Protection', '1; mode=block')
 
   // Control referrer information
   res.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
