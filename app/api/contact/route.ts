@@ -10,6 +10,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 import { contactSchema } from '@/lib/schemas/contact'
+import { containsDangerousPattern } from '@/lib/sanitize'
 
 // ---------------------------------------------------------------------------
 // Rate limiter — in-memory (Node.js runtime)
@@ -31,24 +32,6 @@ function isRateLimited(ip: string): boolean {
   bucket.count += 1
   if (bucket.count > RATE_LIMIT) return true
   return false
-}
-
-// ---------------------------------------------------------------------------
-// XSS / SQLi pattern check (BR-34)
-// ---------------------------------------------------------------------------
-const MALICIOUS_PATTERNS = [
-  /<script/i,
-  /javascript:/i,
-  /on\w+\s*=/i, // onerror=, onclick=, etc.
-  /SELECT\s+.+\s+FROM/i,
-  /INSERT\s+INTO/i,
-  /DROP\s+TABLE/i,
-  /UNION\s+SELECT/i,
-  /';\s*--/,
-]
-
-function containsMaliciousContent(value: string): boolean {
-  return MALICIOUS_PATTERNS.some((re) => re.test(value))
 }
 
 // ---------------------------------------------------------------------------
@@ -97,6 +80,8 @@ async function dispatchEmail(data: {
 // Route handler
 // ---------------------------------------------------------------------------
 export async function POST(req: NextRequest) {
+  const INVALID_INPUT_RESPONSE = NextResponse.json({ message: 'Invalid input' }, { status: 400 })
+
   // Resolve client IP
   const ip =
     req.headers.get('x-forwarded-for')?.split(',')[0].trim() ??
@@ -108,12 +93,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: 'Too Many Requests' }, { status: 429 })
   }
 
+  // Content-Type check (BR-34)
+  const contentType = req.headers.get('content-type')?.toLowerCase()
+  if (!contentType?.startsWith('application/json')) {
+    return INVALID_INPUT_RESPONSE
+  }
+
   // Parse body
   let raw: unknown
   try {
     raw = await req.json()
   } catch {
-    return NextResponse.json({ message: 'Bad Request' }, { status: 400 })
+    return INVALID_INPUT_RESPONSE
   }
 
   // Zod validation (BR-30, BR-32)
@@ -125,8 +116,8 @@ export async function POST(req: NextRequest) {
   const { name, email, category, body } = parsed.data
 
   // Malicious content check (BR-34)
-  if ([name, email, category, body].some(containsMaliciousContent)) {
-    return NextResponse.json({ message: 'Bad Request' }, { status: 400 })
+  if ([name, email, category, body].some(containsDangerousPattern)) {
+    return INVALID_INPUT_RESPONSE
   }
 
   // Send / dispatch (BR-40: never expose internals in response)
