@@ -1,5 +1,3 @@
-'use client'
-
 /** @file GA4 script injector for production pages (FR-32). */
 import Script from 'next/script'
 
