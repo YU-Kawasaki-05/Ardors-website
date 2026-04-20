@@ -1,5 +1,6 @@
 /** @file Root application layout. */
 import type { Metadata } from 'next'
+import { Inter, JetBrains_Mono } from 'next/font/google'
 
 import GoogleAnalytics from '@/components/GoogleAnalytics'
 import { DEFAULT_OG_IMAGE, SITE_URL } from '@/components/JsonLd'
@@ -8,6 +9,18 @@ import Header from '@/components/layout/Header'
 import { getRequestLocale } from '@/lib/i18n/request'
 
 import './globals.css'
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+})
+
+const jetBrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-jetbrains-mono',
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -37,7 +50,10 @@ export default async function RootLayout({
   const locale = await getRequestLocale()
 
   return (
-    <html lang={locale} className="h-full antialiased">
+    <html
+      lang={locale}
+      className={`${inter.variable} ${jetBrainsMono.variable} h-full antialiased`}
+    >
       <body className="flex min-h-full flex-col">
         <Header />
         <main className="flex-1">{children}</main>
