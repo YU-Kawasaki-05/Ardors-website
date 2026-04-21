@@ -49,7 +49,7 @@ export default async function ContactCompletePage() {
         <p className="mt-4 text-base leading-relaxed text-zinc-500">{t.description}</p>
 
         <nav aria-label={t.nextHeading} className="mt-10">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-600">
             {t.nextHeading}
           </p>
           <ul className="flex flex-wrap justify-center gap-2">

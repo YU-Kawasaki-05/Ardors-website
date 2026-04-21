@@ -66,7 +66,7 @@ export default async function Footer() {
 
         <div className="grid grid-cols-2 gap-8 pb-10 sm:grid-cols-3">
           <div>
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-600">
               {t.footer.navigationHeading}
             </p>
             <nav aria-label={t.footer.navigationHeading}>
@@ -86,7 +86,7 @@ export default async function Footer() {
           </div>
 
           <div>
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-600">
               {t.footer.legalHeading}
             </p>
             <nav aria-label={t.footer.legalHeading}>
@@ -106,7 +106,7 @@ export default async function Footer() {
           </div>
 
           <div>
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-600">
               {t.footer.linksHeading}
             </p>
             <ul className="space-y-2">

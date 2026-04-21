@@ -102,8 +102,10 @@ function NavLinks({ items, locale, strippedPathname, onNavigate, className }: Na
             aria-current={isActive ? 'page' : undefined}
             onClick={onNavigate}
             className={cn(
-              'rounded-md px-3 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400',
-              isActive && 'bg-zinc-900 text-white hover:bg-zinc-800 hover:text-white',
+              'rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400',
+              isActive
+                ? 'bg-zinc-900 text-white hover:bg-zinc-800 hover:text-white'
+                : 'text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900',
             )}
           >
             {item.label[locale]}

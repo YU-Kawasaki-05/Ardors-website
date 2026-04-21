@@ -201,7 +201,7 @@ export default function ContactForm({ locale }: { locale: Locale }) {
               </p>
             )}
 
-            <p className="text-xs leading-relaxed text-zinc-400">
+            <p className="text-xs leading-relaxed text-zinc-600">
               {t.privacyLead}{' '}
               <a href={localizeHref(locale, '/privacy')} className="underline hover:text-zinc-600">
                 {t.privacyLink}

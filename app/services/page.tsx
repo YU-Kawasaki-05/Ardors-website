@@ -33,7 +33,7 @@ function ServiceCard({ locale, service }: { locale: Locale; service: ServiceItem
       </ul>
 
       <div className="mt-auto pt-6">
-        <p className="mb-4 text-xs text-zinc-400">{service.priceNote}</p>
+        <p className="mb-4 text-xs text-zinc-600">{service.priceNote}</p>
         <Link
           href={localizeHref(locale, service.ctaHref)}
           className="inline-flex h-10 items-center justify-center rounded-xl bg-indigo-600 px-5 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
@@ -87,7 +87,7 @@ export default async function ServicesPage() {
 
       <section className="py-4 pb-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <h2 className="mb-6 text-sm font-semibold uppercase tracking-widest text-zinc-400">
+          <h2 className="mb-6 text-sm font-semibold uppercase tracking-widest text-zinc-600">
             {t.nextPagesHeading}
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -102,7 +102,7 @@ export default async function ServicesPage() {
                   <p className="mt-0.5 text-xs text-zinc-500">{page.description}</p>
                 </div>
                 <span
-                  className="shrink-0 text-zinc-400 transition-transform group-hover:translate-x-0.5 group-hover:text-zinc-600"
+                  className="shrink-0 text-zinc-600 transition-transform group-hover:translate-x-0.5 group-hover:text-zinc-600"
                   aria-hidden="true"
                 >
                   →

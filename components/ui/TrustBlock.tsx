@@ -33,7 +33,7 @@ function TagList({ items }: { items: string[] }) {
 }
 
 function BlockHeading({ children }: { children: React.ReactNode }) {
-  return <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">{children}</p>
+  return <p className="text-xs font-semibold uppercase tracking-wider text-zinc-600">{children}</p>
 }
 
 export default function TrustBlock({

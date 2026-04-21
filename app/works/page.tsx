@@ -29,7 +29,7 @@ function WorkCard({
     >
       <div className="mb-3 flex items-center justify-between gap-2">
         <span className="text-xs font-medium text-indigo-600">{work.category}</span>
-        <span className="text-xs text-zinc-400">{work.publishedAt}</span>
+        <span className="text-xs text-zinc-600">{work.publishedAt}</span>
       </div>
 
       <h2 className="text-base font-semibold text-zinc-900 group-hover:text-indigo-700">
@@ -117,7 +117,7 @@ export default async function WorksPage({ searchParams }: WorksPageProps) {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           {filteredWorks.length > 0 ? (
             <>
-              <p className="mb-6 text-sm text-zinc-400">
+              <p className="mb-6 text-sm text-zinc-600">
                 {filteredWorks.length} {t.countLabel}
                 {currentOutcome && (
                   <span>
@@ -138,7 +138,7 @@ export default async function WorksPage({ searchParams }: WorksPageProps) {
               </div>
             </>
           ) : (
-            <p className="py-16 text-center text-sm text-zinc-400">{t.empty}</p>
+            <p className="py-16 text-center text-sm text-zinc-600">{t.empty}</p>
           )}
         </div>
       </section>
