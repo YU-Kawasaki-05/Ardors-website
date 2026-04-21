@@ -107,7 +107,7 @@ function NextPages({ locale }: { locale: Locale }) {
   return (
     <section className="py-16" aria-label="next-pages">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <h2 className="mb-6 text-sm font-semibold uppercase tracking-widest text-zinc-400">
+        <h2 className="mb-6 text-sm font-semibold uppercase tracking-widest text-zinc-600">
           {t.nextPagesHeading}
         </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -122,7 +122,7 @@ function NextPages({ locale }: { locale: Locale }) {
                 <p className="mt-0.5 text-xs text-zinc-500">{page.description}</p>
               </div>
               <span
-                className="shrink-0 text-zinc-400 transition-transform group-hover:translate-x-0.5 group-hover:text-zinc-600"
+                className="shrink-0 text-zinc-600 transition-transform group-hover:translate-x-0.5 group-hover:text-zinc-600"
                 aria-hidden="true"
               >
                 →

@@ -50,7 +50,7 @@ export default async function ProfilePage() {
           </p>
           <h1 className="mt-3 text-4xl font-bold tracking-tight text-zinc-900 sm:text-5xl">
             {profile.name}
-            <span className="ml-3 text-2xl font-normal text-zinc-400">{profile.nameEn}</span>
+            <span className="ml-3 text-2xl font-normal text-zinc-600">{profile.nameEn}</span>
           </h1>
           <p className="mt-2 text-base font-medium text-zinc-500">{profile.title}</p>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-zinc-600">{profile.bio}</p>
@@ -63,7 +63,7 @@ export default async function ProfilePage() {
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {profile.skills.map((group) => (
               <div key={group.category}>
-                <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-600">
                   {group.category}
                 </p>
                 <ul className="flex flex-wrap gap-2">
@@ -90,7 +90,7 @@ export default async function ProfilePage() {
                 <span className="absolute -left-2 flex h-4 w-4 items-center justify-center rounded-full border border-zinc-200 bg-white ring-4 ring-white">
                   <span className="h-2 w-2 rounded-full bg-indigo-500" />
                 </span>
-                <p className="mb-1 text-xs font-medium text-zinc-400">{entry.period}</p>
+                <p className="mb-1 text-xs font-medium text-zinc-600">{entry.period}</p>
                 <p className="text-sm font-semibold text-zinc-900">{entry.role}</p>
                 <p className="text-xs text-zinc-500">{entry.organization}</p>
                 <p className="mt-1.5 text-sm leading-relaxed text-zinc-600">{entry.description}</p>

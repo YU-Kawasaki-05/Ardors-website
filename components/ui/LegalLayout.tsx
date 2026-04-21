@@ -24,7 +24,7 @@ export default function LegalLayout({ doc, locale }: { doc: LegalDoc; locale: Lo
           <h1 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
             {doc.title}
           </h1>
-          <p className="mt-3 text-sm text-zinc-400">
+          <p className="mt-3 text-sm text-zinc-600">
             {t.legalLayout.updatedAt}: {formatDate(doc.updatedAt, locale, t.legalLayout.dateLocale)}
           </p>
         </div>

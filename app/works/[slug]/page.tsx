@@ -121,7 +121,7 @@ export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
             <span className="text-zinc-300" aria-hidden="true">
               /
             </span>
-            <span className="text-sm text-zinc-400">{work.publishedAt}</span>
+            <span className="text-sm text-zinc-600">{work.publishedAt}</span>
           </div>
           <h1 className="mt-3 text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
             {work.title}
@@ -200,7 +200,7 @@ export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
       {nextWorkItems.length > 0 && (
         <section className="border-t border-zinc-100 py-14">
           <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-            <h2 className="mb-6 text-sm font-semibold uppercase tracking-widest text-zinc-400">
+            <h2 className="mb-6 text-sm font-semibold uppercase tracking-widest text-zinc-600">
               {t.detail.nextHeading}
             </h2>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -215,7 +215,7 @@ export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
                     <p className="mt-0.5 text-sm font-semibold text-zinc-900">{nextWork.title}</p>
                   </div>
                   <span
-                    className="shrink-0 text-zinc-400 transition-transform group-hover:translate-x-0.5 group-hover:text-zinc-600"
+                    className="shrink-0 text-zinc-600 transition-transform group-hover:translate-x-0.5 group-hover:text-zinc-600"
                     aria-hidden="true"
                   >
                     →

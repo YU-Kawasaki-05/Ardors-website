@@ -52,7 +52,7 @@ export default async function NotFound() {
         </Link>
 
         <nav aria-label={t.quickLinksAria} className="mt-10">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-600">
             {t.quickLinksHeading}
           </p>
           <ul className="flex flex-wrap justify-center gap-2">
