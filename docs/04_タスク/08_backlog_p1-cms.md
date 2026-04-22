@@ -44,7 +44,9 @@ Scope
 - 変更 NG: 他ページ・API ルート
 
 Implementation Hints
-- RSS パース: `fast-xml-parser` または `rss-parser` ライブラリを使用。
+- RSS パース: 初期実装では production dependency を増やさず、必要項目（`title` / `link` / `pubDate` / `description`）だけを軽量パースしてよい。
+- 実データ互換性や保守性に課題が出た場合のみ、`fast-xml-parser` を優先候補として導入を再検討する。
+- 本番依存の追加は repo 運用ルールに従い、導入前に確認する。
 - Next.js の fetch キャッシュ:
   ```ts
   const res = await fetch(process.env.NOTE_RSS_URL!, {
