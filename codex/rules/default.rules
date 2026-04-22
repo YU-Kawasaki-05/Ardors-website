@@ -1,5 +1,23 @@
 # Faster GitHub read workflows (outside sandbox)
 prefix_rule(
+    pattern = ["gh", "auth", "status"],
+    decision = "allow",
+    justification = "Auth inspection is read-only and commonly used before GitHub actions.",
+)
+
+prefix_rule(
+    pattern = ["gh", "pr", "status"],
+    decision = "allow",
+    justification = "PR status inspection is read-only and frequently used.",
+)
+
+prefix_rule(
+    pattern = ["gh", "pr", "list"],
+    decision = "allow",
+    justification = "PR listing is read-only and frequently used.",
+)
+
+prefix_rule(
     pattern = ["gh", "pr", "view"],
     decision = "allow",
     justification = "PR metadata reads are safe and frequently used",
@@ -22,6 +40,138 @@ prefix_rule(
     pattern = ["gh", "run", "view"],
     decision = "allow",
     justification = "GitHub Actions run inspection is read-only",
+)
+
+prefix_rule(
+    pattern = ["git", "status"],
+    decision = "allow",
+    justification = "Status inspection is safe and used constantly during local work.",
+)
+
+prefix_rule(
+    pattern = ["git", "diff"],
+    decision = "allow",
+    justification = "Diff inspection is read-only and should not require approval.",
+)
+
+prefix_rule(
+    pattern = ["git", "log"],
+    decision = "allow",
+    justification = "History inspection is read-only and frequently used.",
+)
+
+prefix_rule(
+    pattern = ["git", "branch"],
+    decision = "allow",
+    justification = "Branch inspection and management is part of the normal task workflow.",
+)
+
+prefix_rule(
+    pattern = ["git", "switch"],
+    decision = "allow",
+    justification = "Switching to task branches is part of the normal local workflow.",
+)
+
+prefix_rule(
+    pattern = ["git", "checkout"],
+    decision = "allow",
+    justification = "Checkout remains allowed for compatibility with existing habits.",
+)
+
+prefix_rule(
+    pattern = ["git", "add"],
+    decision = "allow",
+    justification = "Staging local changes is routine and protected by repository hooks.",
+)
+
+prefix_rule(
+    pattern = ["git", "commit"],
+    decision = "allow",
+    justification = "Commits are routine on feature branches, and repo hooks still gate non-feature branches.",
+)
+
+prefix_rule(
+    pattern = ["git", "fetch"],
+    decision = "allow",
+    justification = "Fetching remote refs is safe and frequently required before comparing with origin.",
+)
+
+prefix_rule(
+    pattern = ["pnpm", "install"],
+    decision = "allow",
+    justification = "Dependency installation is a common project task.",
+)
+
+prefix_rule(
+    pattern = ["pnpm", "add"],
+    decision = "allow",
+    justification = "Adding dependencies is a common project task.",
+)
+
+prefix_rule(
+    pattern = ["pnpm", "dev"],
+    decision = "allow",
+    justification = "Starting the local development server is routine.",
+)
+
+prefix_rule(
+    pattern = ["pnpm", "start"],
+    decision = "allow",
+    justification = "Starting the production preview server is routine.",
+)
+
+prefix_rule(
+    pattern = ["pnpm", "build"],
+    decision = "allow",
+    justification = "Project builds are routine verification commands.",
+)
+
+prefix_rule(
+    pattern = ["pnpm", "lint"],
+    decision = "allow",
+    justification = "Linting is routine verification.",
+)
+
+prefix_rule(
+    pattern = ["pnpm", "typecheck"],
+    decision = "allow",
+    justification = "Type checking is routine verification.",
+)
+
+prefix_rule(
+    pattern = ["pnpm", "type-check"],
+    decision = "allow",
+    justification = "Compatibility alias for type checking.",
+)
+
+prefix_rule(
+    pattern = ["pnpm", "test"],
+    decision = "allow",
+    justification = "Test execution is routine verification.",
+)
+
+prefix_rule(
+    pattern = ["pnpm", "test:e2e"],
+    decision = "allow",
+    justification = "E2E execution is routine verification for this repo.",
+)
+
+prefix_rule(
+    pattern = ["ss", "-ltnp"],
+    decision = "allow",
+    justification = "Port inspection is read-only and useful for local environment cleanup.",
+)
+
+prefix_rule(
+    pattern = ["ps", "-ef"],
+    decision = "allow",
+    justification = "Process inspection is read-only and useful for local environment cleanup.",
+)
+
+prefix_rule(
+    pattern = ["lsof", "-Pan"],
+    decision = "allow",
+    justification = "Socket and process inspection is read-only and useful for local environment cleanup.",
 )
 
 # Keep destructive operations gated
@@ -80,6 +230,18 @@ prefix_rule(
     pattern = ["rm", "-rf"],
     decision = "prompt",
     justification = "Recursive deletion needs explicit review.",
+)
+
+prefix_rule(
+    pattern = ["kill"],
+    decision = "prompt",
+    justification = "Stopping processes should stay explicit even when cleanup is needed.",
+)
+
+prefix_rule(
+    pattern = ["pkill"],
+    decision = "prompt",
+    justification = "Stopping processes should stay explicit even when cleanup is needed.",
 )
 
 prefix_rule(
