@@ -58,6 +58,15 @@ export const NAV_ITEMS: NavItem[] = [
     footerGroup: 'main',
   },
   {
+    key: 'notes',
+    screenId: 'SCR-13',
+    href: '/notes',
+    label: { ja: 'Note', en: 'Notes' },
+    showInHeader: true,
+    showInFooter: true,
+    footerGroup: 'main',
+  },
+  {
     key: 'works-detail',
     screenId: 'SCR-05',
     href: '/works/[slug]',
