@@ -1,6 +1,6 @@
 /**
- * @file Next.js middleware — locale prefix routing + security headers
- * (FR-08, BR-20, AC-22-03, FR-71)
+ * @file Next.js middleware — locale prefix routing, admin auth guard, and security headers
+ * (FR-08, FR-42, BR-20, AC-22-03, FR-71)
  */
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -15,6 +15,12 @@ import {
   stripLocalePrefix,
   toLocalizedPathname,
 } from '@/config/i18n'
+import {
+  ADMIN_SESSION_COOKIE_NAME,
+  buildAdminLoginHref,
+  getDefaultAdminReturnPath,
+  readAdminSession,
+} from '@/lib/auth'
 
 function applySecurityHeaders(res: NextResponse) {
   const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -68,7 +74,22 @@ function applySecurityHeaders(res: NextResponse) {
   res.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
 }
 
-export function middleware(req: NextRequest) {
+function applyResponseDefaults(res: NextResponse, locale: string) {
+  res.cookies.set(LOCALE_COOKIE_NAME, locale, {
+    path: '/',
+    sameSite: 'lax',
+    maxAge: 60 * 60 * 24 * 365,
+  })
+
+  applySecurityHeaders(res)
+  return res
+}
+
+function isAdminRoute(pathname: string): boolean {
+  return pathname === '/admin' || pathname.startsWith('/admin/')
+}
+
+export async function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl
 
   const localeFromPath = getLocaleFromPathname(pathname)
@@ -76,10 +97,29 @@ export function middleware(req: NextRequest) {
   const locale = localeFromPath ?? (isLocale(localeFromCookie) ? localeFromCookie : DEFAULT_LOCALE)
 
   const strippedPathname = stripLocalePrefix(pathname)
+  const strippedPathWithSearch = `${strippedPathname}${search}`
   const requestHeaders = new Headers(req.headers)
   requestHeaders.set(LOCALE_HEADER_NAME, locale)
   requestHeaders.set(PATHNAME_HEADER_NAME, strippedPathname)
   requestHeaders.set(SEARCH_HEADER_NAME, search)
+
+  if (isAdminRoute(strippedPathname)) {
+    const session = await readAdminSession(req.cookies.get(ADMIN_SESSION_COOKIE_NAME)?.value)
+    const isAdminLoginRoute = strippedPathname === '/admin/login'
+
+    if (isAdminLoginRoute && session) {
+      const redirectUrl = new URL(getDefaultAdminReturnPath(locale), req.url)
+      return applyResponseDefaults(NextResponse.redirect(redirectUrl), locale)
+    }
+
+    if (!isAdminLoginRoute && !session) {
+      const redirectUrl = new URL(
+        buildAdminLoginHref(locale, { nextPath: strippedPathWithSearch }),
+        req.url,
+      )
+      return applyResponseDefaults(NextResponse.redirect(redirectUrl), locale)
+    }
+  }
 
   const res = localeFromPath
     ? NextResponse.rewrite(
@@ -98,14 +138,7 @@ export function middleware(req: NextRequest) {
         })(),
       )
 
-  res.cookies.set(LOCALE_COOKIE_NAME, locale, {
-    path: '/',
-    sameSite: 'lax',
-    maxAge: 60 * 60 * 24 * 365,
-  })
-
-  applySecurityHeaders(res)
-  return res
+  return applyResponseDefaults(res, locale)
 }
 
 export const config = {
