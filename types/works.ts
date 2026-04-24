@@ -40,3 +40,37 @@ export type WorkDetail = Work & {
   /** Slugs of 0–2 related works to surface as "次に読む" (FR-09). */
   nextWorks?: string[]
 }
+
+/** Locale-specific content fields stored by the CMS. */
+export type WorkLocaleContent = {
+  title: string
+  category: string
+  summary: string
+  outcomes: string[]
+  problem: string
+  solution: string
+  result: string
+}
+
+/** CMS record shape shared by the admin UI and the public works projection. */
+export type WorkRecord = {
+  /** Stable internal id used by the admin CMS edit routes. */
+  id: string
+  /** Public slug used by the public route. */
+  slug: string
+  /** Optional card / OG image path. */
+  thumbnail?: string
+  /** Publication month in YYYY-MM. */
+  publishedAt: string
+  /** Whether the case is public for locales with complete content. */
+  published: boolean
+  /** Shared tech stack metadata. */
+  techStack: string[]
+  /** Related public slugs shown in the public detail page. */
+  nextWorks?: string[]
+  /** Locale-bound content. `ja` is required, `en` is optional. */
+  locales: {
+    ja: WorkLocaleContent
+    en?: WorkLocaleContent
+  }
+}

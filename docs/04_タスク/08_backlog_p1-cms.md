@@ -151,11 +151,12 @@ Scope
   - 公開側のページ（app/works/）— データ読み込み部分の修正は最小限に
 
 Implementation Hints
-- データストアは .env.example に記載してヒューマンゲートで選択する。
-  - ENV 未設定の場合は data/works.json をファイルストアとして使用するフォールバックを実装。
+- 初期実装では `WORKS_STORE_MODE=file` + `data/works.json` を標準とし、公開側と管理側で同一JSONを読む。
+- Vercel Hobby 本番では file 書き込みが永続化されないため、本番運用前に外部ストアへ移行する。
 - 編集フォームのフィールド:
   - title（必須）, slug（必須・URL 用）, category, thumbnail, published（boolean）
   - problem / solution / result（必須 — BR-10）, techStack（配列）
+- 英語欄は任意とし、未入力のケースは EN サイトで非表示にする（BR-21）。
 - 公開/非公開のトグルは一覧画面から即座に切替できる（AC-A2-01）。
 - 削除は確認ダイアログ付き（誤操作防止）。
 - ISR の revalidate: 編集後に `revalidatePath('/works')` を呼ぶ。
