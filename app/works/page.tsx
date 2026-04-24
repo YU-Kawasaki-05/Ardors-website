@@ -9,9 +9,12 @@ import { buildPageMetadata } from '@/components/JsonLd'
 import { CTABlock } from '@/components/ui'
 import { getMessages } from '@/lib/i18n'
 import { getRequestLocale } from '@/lib/i18n/request'
+import { listPublicWorks } from '@/lib/works-store'
 import type { Work } from '@/types/works'
 
 import { WorksFilter } from './_components/WorksFilter'
+
+export const revalidate = 3600
 
 function WorkCard({
   locale,
@@ -82,7 +85,7 @@ export default async function WorksPage({ searchParams }: WorksPageProps) {
   const { outcome } = await searchParams
   const currentOutcome = outcome ?? null
 
-  const publishedWorks = t.items.filter((work) => work.published)
+  const publishedWorks = await listPublicWorks(locale)
   const allOutcomes = [...new Set(publishedWorks.flatMap((work) => work.outcomes))]
   const filteredWorks = currentOutcome
     ? publishedWorks.filter((work) => work.outcomes.includes(currentOutcome))

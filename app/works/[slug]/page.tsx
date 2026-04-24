@@ -15,13 +15,16 @@ import JsonLd, {
   toJsonLdLanguage,
 } from '@/components/JsonLd'
 import { CTABlock } from '@/components/ui'
-import { WORKS } from '@/data/works'
 import { getMessages } from '@/lib/i18n'
 import { getRequestLocale } from '@/lib/i18n/request'
+import { getPublicWorkBySlug, listPublicWorks, listPublishedWorkSlugs } from '@/lib/works-store'
 import WorkDetailViewTracker from './_components/WorkDetailViewTracker'
 
-export function generateStaticParams() {
-  return WORKS.filter((work) => work.published).map((work) => ({ slug: work.slug }))
+export const revalidate = 3600
+
+export async function generateStaticParams() {
+  const slugs = await listPublishedWorkSlugs()
+  return slugs.map((slug) => ({ slug }))
 }
 
 type WorkDetailPageProps = {
@@ -34,9 +37,8 @@ function normalizePublishedDate(value: string): string {
 
 export async function generateMetadata({ params }: WorkDetailPageProps): Promise<Metadata> {
   const locale = await getRequestLocale()
-  const t = getMessages(locale).works
   const { slug } = await params
-  const work = t.items.find((item) => item.slug === slug && item.published)
+  const work = await getPublicWorkBySlug(locale, slug)
 
   if (!work) {
     return buildPageMetadata({
@@ -61,16 +63,15 @@ export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
   const locale = await getRequestLocale()
   const t = getMessages(locale).works
   const { slug } = await params
-  const work = t.items.find((item) => item.slug === slug)
+  const work = await getPublicWorkBySlug(locale, slug)
 
-  if (!work || !work.published) {
+  if (!work) {
     notFound()
   }
 
+  const localizedWorks = await listPublicWorks(locale)
   const nextWorkItems = (work.nextWorks ?? [])
-    .map((nextSlug) =>
-      t.items.find((candidate) => candidate.slug === nextSlug && candidate.published),
-    )
+    .map((nextSlug) => localizedWorks.find((candidate) => candidate.slug === nextSlug))
     .filter((candidate) => candidate !== undefined)
     .slice(0, 2)
   const workUrl = toAbsoluteUrl(localizeHref(locale, `/works/${work.slug}`))
