@@ -2,7 +2,7 @@
 title: Backlog (P1) — CMS・Note RSS・Search Console
 phase: 04
 sprint: backlog
-updated: 2026-04-17
+updated: 2026-04-24
 ---
 
 # Backlog (P1): CMS・Note RSS・Search Console
@@ -88,23 +88,24 @@ Scope
 - 変更 OK:
   - app/admin/login/page.tsx（新規）
   - app/admin/layout.tsx（新規 — 認証チェック）
+  - app/admin/cases/page.tsx（新規 — ARD-31 では到達確認用プレースホルダーのみ）
   - middleware.ts（/admin/* ルートの認証ガード追加）
   - lib/auth.ts（セッション管理ユーティリティ、新規）
   - .env.example（ADMIN_EMAIL, ADMIN_PASSWORD_HASH または 認証サービス KEY を追記）
-- 変更 NG: /admin/cases/（ARD-32 担当）
+- 変更 NG: /admin/cases/* の CRUD・公開管理ロジック（ARD-32 担当）
 
 Implementation Hints
-- シンプル実装（マルチユーザー不要なため）:
-  - 環境変数 `ADMIN_EMAIL` / `ADMIN_PASSWORD_HASH`（bcrypt ハッシュ）で照合。
-  - セッションは `iron-session` + HTTP-only Cookie で管理。
-  - または NextAuth.js（Credentials Provider）を使用。
+- 初期実装方針（依存追加なし）:
+  - 環境変数 `ADMIN_EMAIL` / `ADMIN_PASSWORD_HASH` を PBKDF2 (`pbkdf2$sha256$...`) 形式で照合する。
+  - セッションは署名付き HTTP-only Cookie で管理する。
+  - `/admin/cases` は ARD-31 では認証通過確認用の最小プレースホルダーに留める。
 - middleware.ts:
   ```ts
   export const config = { matcher: ['/admin/:path*'] }
   // /admin/login は除外し、それ以外は Cookie チェック → 未認証なら /admin/login へ
 ````
 
-- ログアウト: DELETE /api/auth/logout でセッション Cookie を削除。
+- ログアウト: Server Action または API でセッション Cookie を削除。
 
 Acceptance Criteria (Done)
 
