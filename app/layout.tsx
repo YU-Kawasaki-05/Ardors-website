@@ -40,6 +40,9 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     images: [DEFAULT_OG_IMAGE],
   },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION,
+  },
 }
 
 export default async function RootLayout({
