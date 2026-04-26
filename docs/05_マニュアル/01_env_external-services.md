@@ -1,0 +1,241 @@
+---
+title: 環境変数・外部サービス設定手順
+phase: 05
+updated: 2026-04-26
+---
+
+# 環境変数・外部サービス設定手順
+
+## 目的
+
+Ardors-website を Preview / Production で正しく動かすために、コード外で必要な設定をまとめます。
+
+この手順の対象は以下です。
+
+- Vercel 環境変数
+- 管理者ログイン
+- 問い合わせメール送信
+- GA4 計測
+- Google Search Console
+- Note RSS
+- 実績 CMS データストア
+
+## 1. ローカル環境変数を作る
+
+`.env.example` を元に `.env.local` を作成します。
+
+```bash
+cp .env.example .env.local
+```
+
+`.env.local` は秘密情報を含むため、コミットしません。
+
+## 2. 環境変数一覧
+
+| 変数名                     | 必須タイミング        | 用途                      | 未設定時の挙動                        |
+| -------------------------- | --------------------- | ------------------------- | ------------------------------------- |
+| `CONTACT_EMAIL_TO`         | 問い合わせ実運用前    | 問い合わせ送信先          | 既定の送信先にフォールバックする      |
+| `RESEND_API_KEY`           | 問い合わせ実運用前    | Resend 経由のメール送信   | `console.log` スタブ送信になる        |
+| `ADMIN_EMAIL`              | 管理画面利用前        | 管理者ログインメール      | 管理者認証が未設定扱いになる          |
+| `ADMIN_PASSWORD_HASH`      | 管理画面利用前        | 管理者パスワード照合      | 管理者認証が未設定扱いになる          |
+| `ADMIN_SESSION_SECRET`     | 管理画面利用前        | セッション Cookie 署名    | 管理者認証が未設定扱いになる          |
+| `WORKS_STORE_MODE`         | CMS 利用前            | 実績データストア種別      | `file` として扱う                     |
+| `WORKS_FILE_PATH`          | file ストア利用時     | 実績 JSON の保存先        | `data/works.json` を読む              |
+| `NEXT_PUBLIC_GA4_ID`       | GA4 計測前            | GA4 Measurement ID        | GA4 スクリプトを注入しない            |
+| `GOOGLE_SITE_VERIFICATION` | Search Console 確認前 | Google 所有権確認 meta 値 | verification meta を注入しない        |
+| `NOTE_RSS_URL`             | Note RSS 表示前       | Note の RSS URL           | `/notes` にプレビューカードを表示する |
+
+## 3. Vercel に環境変数を設定する
+
+1. Vercel の対象 Project を開く。
+2. Environment Variables に `.env.example` の変数を追加する。
+3. Production / Preview / Development のどこに入れるかを選ぶ。
+4. 秘密値は Vercel 上だけに保存し、GitHub にコミットしない。
+5. 追加・変更後は再デプロイする。
+
+推奨の入れ方は以下です。
+
+| 環境               | 入れる値                                                                   |
+| ------------------ | -------------------------------------------------------------------------- |
+| Production         | 本番用の全 ENV                                                             |
+| Preview            | GA4 以外は本番相当。GA4 は誤計測を避けるなら未設定でもよい                 |
+| Local `.env.local` | 開発確認に必要な値だけ。実メール送信が不要なら `RESEND_API_KEY` は空でよい |
+
+## 4. 管理者ログインを設定する
+
+管理画面は以下の ENV が揃ったときだけ有効です。
+
+- `ADMIN_EMAIL`
+- `ADMIN_PASSWORD_HASH`
+- `ADMIN_SESSION_SECRET`
+
+### 4.1 セッションシークレットを作る
+
+32文字以上のランダム文字列を使います。
+
+```bash
+openssl rand -base64 48
+```
+
+出力値を `ADMIN_SESSION_SECRET` に設定します。
+
+### 4.2 パスワードハッシュを作る
+
+`ADMIN_PASSWORD_HASH` は平文パスワードではなく、PBKDF2 形式のハッシュです。
+
+形式は以下です。
+
+```text
+pbkdf2$sha256$310000$<salt-base64url>$<hash-base64url>
+```
+
+生成用の一時コマンド例です。`YOUR_PASSWORD_HERE` は実際のパスワードに置き換えてください。
+
+```bash
+node --input-type=module <<'NODE'
+import { webcrypto } from 'node:crypto'
+
+const password = 'YOUR_PASSWORD_HERE'
+const iterations = 310000
+const salt = webcrypto.getRandomValues(new Uint8Array(16))
+const encoder = new TextEncoder()
+
+function base64url(bytes) {
+  return Buffer.from(bytes).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '')
+}
+
+const key = await webcrypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, [
+  'deriveBits',
+])
+const bits = await webcrypto.subtle.deriveBits(
+  { name: 'PBKDF2', hash: 'SHA-256', salt, iterations },
+  key,
+  256,
+)
+
+console.log(`pbkdf2$sha256$${iterations}$${base64url(salt)}$${base64url(new Uint8Array(bits))}`)
+NODE
+```
+
+### 4.3 管理画面の確認
+
+1. `.env.local` または Vercel に3つの ENV を設定する。
+2. `/admin/login` を開く。
+3. `ADMIN_EMAIL` と元の平文パスワードでログインする。
+4. `/admin/cases` に遷移できることを確認する。
+5. ログアウト後、`/admin/cases` に直接アクセスして `/admin/login` に戻されることを確認する。
+
+## 5. 問い合わせメール送信を設定する
+
+問い合わせ API は `RESEND_API_KEY` がある場合だけ Resend に送信します。
+
+### 5.1 必要な設定
+
+- `CONTACT_EMAIL_TO`: 受信先メールアドレス
+- `RESEND_API_KEY`: Resend の API Key
+
+### 5.2 ドメイン送信の注意
+
+現在の送信元はコード上で `noreply@ardors.jp` です。
+
+そのため、本番で実送信する前に以下を確認します。
+
+1. Resend 側で `ardors.jp` の送信ドメインを追加する。
+2. DNS に必要なレコードを設定する。
+3. Resend 側でドメイン認証が通っていることを確認する。
+4. `/contact` からテスト送信する。
+5. `CONTACT_EMAIL_TO` に届くことを確認する。
+
+`RESEND_API_KEY` が未設定の場合、メールは送信されずサーバーログにスタブ出力されます。ローカル開発ではこの状態で問題ありません。
+
+## 6. GA4 を設定する
+
+GA4 は `NEXT_PUBLIC_GA4_ID` があり、かつ `NODE_ENV === 'production'` のときだけ有効です。
+
+### 6.1 設定手順
+
+1. GA4 で Web Data Stream を作る。
+2. Measurement ID を取得する。形式は `G-XXXXXXXXXX` です。
+3. Vercel Production に `NEXT_PUBLIC_GA4_ID` を設定する。
+4. 再デプロイする。
+5. 本番 URL を開き、GA4 の DebugView / Realtime で確認する。
+
+### 6.2 確認するイベント
+
+最低限、以下を確認します。
+
+- `page_view`
+- `cta_click`
+- `work_detail_view`
+- `contact_reach`
+- `contact_submit`
+
+行動イベントは ARD-25 の実装対象です。開発環境では誤送信防止のため no-op になります。
+
+## 7. Google Search Console を設定する
+
+Search Console は `GOOGLE_SITE_VERIFICATION` を使って meta tag 方式で確認します。
+
+### 7.1 設定手順
+
+1. Search Console で対象プロパティを作る。
+2. HTML meta tag 方式の verification 値を取得する。
+3. `content="..."` の中身だけを `GOOGLE_SITE_VERIFICATION` に設定する。
+4. Vercel に設定して再デプロイする。
+5. Search Console で所有権確認を実行する。
+6. `https://ardors.jp/sitemap.xml` を送信する。
+
+### 7.2 確認 URL
+
+- `/robots.txt`
+- `/sitemap.xml`
+
+`robots.txt` では `/admin/` をクロール対象外にしています。
+
+## 8. Note RSS を設定する
+
+`NOTE_RSS_URL` に Note の RSS URL を設定すると、`/notes` に記事一覧が表示されます。
+
+### 8.1 設定手順
+
+1. Note 側の RSS URL を確認する。
+2. Vercel Production に `NOTE_RSS_URL` を設定する。
+3. 再デプロイする。
+4. `/notes` を開く。
+5. 記事タイトル、公開日、抜粋、外部リンクが表示されることを確認する。
+
+### 8.2 未設定時の挙動
+
+`NOTE_RSS_URL` が未設定の場合、`/notes` は壊れずにプレビュー用カードを3件表示します。
+
+### 8.3 再取得タイミング
+
+RSS は ISR で1時間ごとに再取得します。
+
+```ts
+next: {
+  revalidate: 3600
+}
+```
+
+## 9. 実績 CMS データストアの注意
+
+現状の CMS は `WORKS_STORE_MODE=file` と `data/works.json` を使います。
+
+これはローカル開発や動作確認には便利ですが、Vercel Hobby の本番運用では永続ストアとして扱わないでください。
+
+理由は以下です。
+
+- デプロイされたファイルシステムへの書き込みは永続運用に向かない。
+- 再デプロイや実行環境の差し替えで管理画面からの変更が失われる可能性がある。
+- 複数実行環境で同じ JSON を安全に更新する前提がない。
+
+本番で CMS 更新を安定運用する場合は、別タスクで外部ストア化します。
+
+候補は以下です。
+
+- Vercel Postgres
+- Supabase
+- Vercel KV
+
+外部ストア化するまでは、Production に反映したい実績は `data/works.json` を編集して PR 経由で反映する運用を推奨します。
