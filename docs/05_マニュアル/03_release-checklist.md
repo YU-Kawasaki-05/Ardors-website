@@ -1,0 +1,159 @@
+---
+title: リリース・PR チェックリスト
+phase: 05
+updated: 2026-04-26
+---
+
+# リリース・PR チェックリスト
+
+## 目的
+
+1 task 1 branch の運用で、実装から merge 後の整理までを安定して進めるための手順です。
+
+## 1. 作業開始前
+
+最新の `main` から新しい `feature/*` ブランチを切ります。
+
+```bash
+git switch main
+git pull --ff-only origin main
+git switch -c feature/<task-id-short-name>
+```
+
+例です。
+
+```bash
+git switch -c feature/ard-30-note-rss
+```
+
+## 2. 実装中
+
+変更範囲を小さく保ちます。
+
+- タスクの Scope 外を触らない。
+- docs / code / tests の関係を崩さない。
+- 新しい本番依存を追加する前に相談する。
+- UI を触る場合は `DESIGN.md` を先に読む。
+- `.env.local` や秘密値をコミットしない。
+
+## 3. コミット前の確認
+
+最低限、以下を実行します。
+
+```bash
+pnpm lint
+pnpm typecheck
+```
+
+ページ追加、metadata、middleware、ビルド設定を触った場合は以下も実行します。
+
+```bash
+pnpm build
+```
+
+ロジックやセキュリティを触った場合は以下も候補です。
+
+```bash
+pnpm test
+pnpm test:e2e
+```
+
+## 4. ステージング前の確認
+
+```bash
+git status --short
+git diff --check
+git diff
+```
+
+確認観点は以下です。
+
+- 余計なファイルが混ざっていない。
+- `.env.local` が含まれていない。
+- コンフリクトマーカーが残っていない。
+- formatter による無関係な大規模差分がない。
+
+コンフリクトマーカー確認です。
+
+```bash
+rg -n '(<{7}|={7}|>{7})' .
+```
+
+## 5. コミット
+
+```bash
+git add <changed-files>
+git commit -m "feat(scope): short summary"
+```
+
+コミットメッセージ例です。
+
+| 種別    | 例                                                   |
+| ------- | ---------------------------------------------------- |
+| feature | `feat(notes): implement ARD-30 Note RSS page`        |
+| docs    | `docs(manual): add external service operation guide` |
+| fix     | `fix(contact): reject invalid content type`          |
+| test    | `test(contact): add validation coverage`             |
+
+## 6. PR 作成前
+
+PR 本文には以下を入れます。
+
+1. What
+2. Why（FR-_/SCR-_ を明記）
+3. How to test
+4. Risks/Follow-ups
+5. Human action required
+
+Human action required には、Vercel ENV や外部サービス設定が必要な場合に必ず書きます。
+
+## 7. PR merge 後のローカル同期
+
+PR が merge されたら、ローカルの `main` を更新します。
+
+```bash
+git switch main
+git pull --ff-only origin main
+git fetch origin --prune
+```
+
+## 8. 不要ブランチの削除
+
+merge 済みのローカルブランチを削除します。
+
+```bash
+git branch -D feature/<merged-branch>
+```
+
+remote ブランチ削除は人間が実行します。
+
+```bash
+git push origin --delete feature/<merged-branch>
+```
+
+GitHub で squash merge / rebase merge した場合、`git branch --merged main` に出ないことがあります。その場合でも、PR が merge 済みで差分が `main` に入っていることを確認できれば `-D` 削除で問題ありません。
+
+## 9. 本番反映後の確認
+
+Production URL で以下を確認します。
+
+- 主要ページが 200 で表示される。
+- `/admin/` が未認証でログイン画面へリダイレクトされる。
+- `/robots.txt` が返る。
+- `/sitemap.xml` が返る。
+- 問い合わせフォームが送信できる。
+- GA4 Realtime / DebugView にイベントが出る。
+- Search Console の所有権確認が通る。
+- `/notes` に Note 記事が表示される。
+- `/works` に公開実績が表示される。
+
+## 10. 障害時の切り分け
+
+| 症状                        | 最初に見る場所                                               |
+| --------------------------- | ------------------------------------------------------------ |
+| 管理画面にログインできない  | `ADMIN_EMAIL`, `ADMIN_PASSWORD_HASH`, `ADMIN_SESSION_SECRET` |
+| 問い合わせメールが届かない  | `RESEND_API_KEY`, `CONTACT_EMAIL_TO`, Resend のドメイン認証  |
+| GA4 が出ない                | `NEXT_PUBLIC_GA4_ID`, production build かどうか              |
+| Search Console 確認が落ちる | `GOOGLE_SITE_VERIFICATION`, 再デプロイ済みか                 |
+| `/notes` がプレビューのまま | `NOTE_RSS_URL`, RSS URL の到達性, ISR の再取得待ち           |
+| 実績 CMS の変更が残らない   | file ストア運用の限界。外部ストア化が必要                    |
