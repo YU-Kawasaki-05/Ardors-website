@@ -3,11 +3,13 @@ import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import type { Locale } from '@/config/i18n'
+import bundledWorkRecords from '@/data/works.json'
 import { parseWorkRecords, type WorkUpsertInput } from '@/lib/schemas/work'
 import type { WorkDetail, WorkLocaleContent, WorkRecord } from '@/types/works'
 
 const DEFAULT_WORKS_FILE_PATH = 'data/works.json'
 const FILE_STORE_MODE = 'file'
+const BUNDLED_WORK_RECORDS = parseWorkRecords(bundledWorkRecords)
 
 function resolveWorksFilePath(): string {
   const configuredPath = process.env.WORKS_FILE_PATH?.trim() || DEFAULT_WORKS_FILE_PATH
@@ -24,6 +26,10 @@ function sortWorkRecords(records: WorkRecord[]): WorkRecord[] {
 
     return left.locales.ja.title.localeCompare(right.locales.ja.title, 'ja')
   })
+}
+
+function isFileNotFoundError(error: unknown): boolean {
+  return typeof error === 'object' && error !== null && 'code' in error && error.code === 'ENOENT'
 }
 
 function hasCompleteLocaleContent(
@@ -66,8 +72,16 @@ function toPublicWork(record: WorkRecord, locale: Locale): WorkDetail | null {
 }
 
 async function readWorkRecords(): Promise<WorkRecord[]> {
-  const fileContents = await readFile(resolveWorksFilePath(), 'utf8')
-  return sortWorkRecords(parseWorkRecords(JSON.parse(fileContents)))
+  try {
+    const fileContents = await readFile(resolveWorksFilePath(), 'utf8')
+    return sortWorkRecords(parseWorkRecords(JSON.parse(fileContents)))
+  } catch (error) {
+    if (isFileNotFoundError(error)) {
+      return sortWorkRecords(BUNDLED_WORK_RECORDS)
+    }
+
+    throw error
+  }
 }
 
 async function writeWorkRecords(records: WorkRecord[]): Promise<void> {
