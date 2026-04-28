@@ -12,6 +12,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { contactSchema } from '@/lib/schemas/contact'
 import { containsDangerousPattern } from '@/lib/sanitize'
 
+const DEFAULT_RESEND_FROM_EMAIL = 'noreply@mail.kaisatsu.com'
+
 // ---------------------------------------------------------------------------
 // Rate limiter — in-memory (Node.js runtime)
 // ---------------------------------------------------------------------------
@@ -45,6 +47,7 @@ async function dispatchEmail(data: {
 }): Promise<void> {
   const to = process.env.CONTACT_EMAIL_TO
   const resendKey = process.env.RESEND_API_KEY
+  const from = process.env.RESEND_FROM_EMAIL?.trim() || DEFAULT_RESEND_FROM_EMAIL
 
   const subject = `[Ardors] お問い合わせ: ${data.category} — ${data.name}`
   const text = [
@@ -63,7 +66,7 @@ async function dispatchEmail(data: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'noreply@ardors.jp',
+        from,
         to: to ?? 'yuu.kawasaki@fouryou.co.jp',
         subject,
         text,
@@ -73,7 +76,7 @@ async function dispatchEmail(data: {
   }
 
   // Stub — no email service configured
-  console.log('[contact] stub — would send email:', { to, subject, text })
+  console.log('[contact] stub — would send email:', { from, to, subject, text })
 }
 
 // ---------------------------------------------------------------------------
