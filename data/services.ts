@@ -1,8 +1,7 @@
 /**
  * @file Service content data (FR-02).
  *
- * Hardcoded for now; replace with CMS fetch when the CMS layer is ready (ARD-40〜).
- * Keep types in sync with any future API schema.
+ * Hardcoded for now; replace with CMS fetch when the CMS layer is ready.
  */
 
 export type ServiceItem = {
@@ -16,8 +15,6 @@ export type ServiceItem = {
   description: string
   /** Key deliverables or scope items (bullet list). */
   deliverables: string[]
-  /** Price range as human-readable text. */
-  priceNote: string
   /** CTA label for this service card. */
   ctaLabel: string
   /** CTA destination (always /contact for direct inquiry). */
@@ -26,67 +23,78 @@ export type ServiceItem = {
 
 export const SERVICES: ServiceItem[] = [
   {
-    id: 'web-development',
-    name: 'Web 開発',
-    tagline: 'Next.js / TypeScript でのサイト・アプリ構築',
+    id: 'web-app-development',
+    name: 'Webアプリ / 業務システム開発',
+    tagline: '業務に合わせた管理画面・Webアプリを設計から実装まで',
     description:
-      'マーケティングサイトから管理画面付き Web アプリまで、要件に合わせた構成で設計・実装します。パフォーマンス・アクセシビリティ・保守性を標準品質として担保します。',
+      '現場の業務や利用者の動きを理解したうえで、必要な機能を整理し、使われるWebアプリや管理画面を形にします。小さく始めるPoCから、継続改善を前提にした開発まで対応します。',
     deliverables: [
-      'フロントエンド設計・実装（Next.js / React）',
-      'API 設計・バックエンド連携',
-      'レスポンシブ対応・パフォーマンスチューニング',
-      'Vercel / AWS へのデプロイ・CI/CD 整備',
+      '要件整理・画面設計・データ設計',
+      'Next.js / React / TypeScript を中心にした実装',
+      'API・データベース・外部サービス連携',
+      'リリース後の改善相談・軽微な運用支援',
     ],
-    priceNote: '50 万円〜（規模・要件により変動）',
-    ctaLabel: 'Web 開発について相談する',
+    ctaLabel: '開発について相談する',
     ctaHref: '/contact',
   },
   {
-    id: 'ui-ux-design',
-    name: 'UI/UX デザイン',
-    tagline: 'Figma を起点にした設計・プロトタイプ・実装',
+    id: 'business-improvement',
+    name: '業務改善・効率化支援',
+    tagline: 'AIや自動化を、現場で使える形に落とし込む',
     description:
-      'ユーザーの目的を起点に情報設計・ワイヤーフレーム・ビジュアルデザインを行います。デザインと実装を同一人物が担うため、意図が正確にプロダクトへ反映されます。',
+      '生成AIや自動化ツールを単体で導入するのではなく、業務フローやデータ活用と合わせて整理します。PoC、社内向け資料、運用設計まで、現場に定着する形を重視します。',
     deliverables: [
-      '情報アーキテクチャ・ワイヤーフレーム作成',
-      'Figma でのビジュアルデザイン・コンポーネント設計',
-      'インタラクティブプロトタイプ',
-      'デザインシステム・スタイルガイド整備',
+      '業務ヒアリング・改善ポイントの整理',
+      'AI活用・自動化のPoC設計と実装',
+      '社内向け解説資料・運用資料の作成',
+      '効果検証と次の改善案の整理',
     ],
-    priceNote: '20 万円〜（成果物の範囲による）',
-    ctaLabel: 'デザインについて相談する',
+    ctaLabel: '業務改善について相談する',
     ctaHref: '/contact',
   },
   {
-    id: 'tech-consulting',
-    name: '技術コンサルティング',
-    tagline: '技術選定・設計レビュー・開発プロセス改善',
+    id: 'saas-mvp-support',
+    name: 'SaaS / MVP 開発支援',
+    tagline: 'アイデアを検証できるプロダクトにする',
     description:
-      '技術的な意思決定に伴走します。アーキテクチャ設計・コードレビュー・CI/CD 整備・チームへの技術導入支援など、短期スポットから顧問契約まで対応します。',
+      '最初から大きく作り込むのではなく、検証したい価値やユーザー体験を絞り、MVPとして動く形にします。自分自身のプロダクト開発経験も活かして、事業側の迷いにも寄り添います。',
     deliverables: [
-      '技術選定・アーキテクチャ設計レビュー',
-      'コードレビュー・品質基準策定',
-      '開発プロセス・CI/CD 改善',
-      '技術勉強会・ドキュメント整備支援',
+      'プロダクト仮説・必要機能の整理',
+      'MVPスコープの設計',
+      '認証・管理画面・基本機能の実装',
+      'リリース後の改善・運用相談',
     ],
-    priceNote: 'スポット 3 万円〜 / 月額顧問 10 万円〜',
-    ctaLabel: 'コンサルについて相談する',
+    ctaLabel: 'MVP開発について相談する',
     ctaHref: '/contact',
   },
   {
-    id: 'saas-development',
-    name: 'SaaS 開発支援',
-    tagline: 'プロダクト企画から MVP 構築まで',
+    id: 'stripe-consultation',
+    name: 'Stripe / 決済導入相談',
+    tagline: '課金や販売導線を小さく検証するための相談',
     description:
-      'SaaS 立ち上げにおける設計・実装・インフラをトータルでサポートします。ゼロから MVP を作る場合から、既存プロダクトの機能拡張まで相談ください。',
+      'Stripeを使った決済導線や月額課金の設計について相談できます。実装は要件に応じて慎重に進め、利用規約や運用フローなど、決済前後に必要な整理も含めて検討します。',
     deliverables: [
-      'プロダクト要件定義・設計支援',
-      'MVP 開発（フロントエンド〜バックエンド）',
-      'マルチテナント設計・認証基盤構築',
-      'リリース後の運用・改善サポート',
+      '決済導線・料金体系の整理',
+      'Stripe Checkout 等の導入相談',
+      '返金・解約・運用フローの整理',
+      '既存プロダクトへの段階的な導入検討',
     ],
-    priceNote: '要相談（規模・期間により個別見積もり）',
-    ctaLabel: 'SaaS 開発について相談する',
+    ctaLabel: '決済導入について相談する',
+    ctaHref: '/contact',
+  },
+  {
+    id: 'technical-partner',
+    name: '技術相談・開発伴走',
+    tagline: '壁打ちから実装まで、必要な距離感で支援',
+    description:
+      '技術選定、実装方針、開発プロセス、AI活用などを一緒に整理します。単発相談から、実装を伴う継続支援まで、状況に合わせた関わり方が可能です。',
+    deliverables: [
+      '技術選定・実装方針の壁打ち',
+      'コード・設計レビュー',
+      'GitHub Actions 等の開発フロー整備',
+      '継続的な改善相談・実装支援',
+    ],
+    ctaLabel: '技術相談をする',
     ctaHref: '/contact',
   },
 ]

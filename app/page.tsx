@@ -52,13 +52,13 @@ function Hero({ locale }: { locale: Locale }) {
 
         <div className="mt-10 flex flex-col gap-3 sm:flex-row">
           <Link
-            href={localizeHref(locale, '/contact')}
+            href={localizeHref(locale, t.hero.primaryHref)}
             className="inline-flex h-12 items-center justify-center rounded-xl bg-indigo-600 px-7 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
           >
             {t.hero.primaryCTA}
           </Link>
           <Link
-            href={localizeHref(locale, '/works')}
+            href={localizeHref(locale, t.hero.secondaryHref)}
             className="inline-flex h-12 items-center justify-center rounded-xl border border-zinc-300 bg-white px-7 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2"
           >
             {t.hero.secondaryCTA}

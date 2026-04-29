@@ -2,10 +2,9 @@
 import { PRIVACY } from '@/data/legal/privacy'
 import { TERMS } from '@/data/legal/terms'
 import { TOKUSHOHO } from '@/data/legal/tokushoho'
+import { PRODUCTS } from '@/data/products'
 import { PROFILE } from '@/data/profile'
-import { SAAS } from '@/data/saas'
 import { SERVICES } from '@/data/services'
-import { WORKS } from '@/data/works'
 import type { Category } from '@/lib/schemas/contact'
 
 const contactCategoryLabels: Record<Category, string> = {
@@ -42,59 +41,63 @@ export const jaMessages = {
   },
   trustBlock: {
     ariaLabel: '信頼ブロック',
-    domains: '対応ドメイン',
+    domains: '対応領域',
     techStack: '主要技術',
-    outcomes: '実績',
+    outcomes: '活動軸',
     github: 'GitHub',
   },
   home: {
     hero: {
-      target: 'フリーランス受託 / 技術コンサル',
-      title: 'デザインと技術で、\nWebを事業の武器に。',
+      target: '受託開発 / 業務改善 / プロダクトづくり',
+      title: '事業の次の一手を、\n動く仕組みにする。',
       description:
-        '受託開発・UXデザイン・技術コンサルを一気通貫で提供します。課題の整理から設計・実装・改善まで、Ardors が伴走します。',
-      primaryCTA: '相談する',
-      secondaryCTA: '実績を見る',
+        '顧客の課題を理解し、Web開発・AI活用・業務改善を組み合わせて、事業に役立つプロダクトやシステムを形にします。技術だけでなく、使われ方と価値につながる設計を大切にしています。',
+      primaryCTA: '実績を見る',
+      primaryHref: '/works',
+      secondaryCTA: '相談する',
+      secondaryHref: '/contact',
     },
     entryBranches: [
       {
-        label: '相談したい',
-        description: '困りごとを整理して、一緒に解決策を考えます。まずはお気軽にどうぞ。',
-        href: '/contact',
-      },
-      {
         label: '実績を見たい',
-        description: '課題・対応・成果の軸で整理した実績をご覧いただけます。',
+        description: 'marubo、Ardors website、AI/ITコンサル、テスト自動化の実績を紹介しています。',
         href: '/works',
       },
       {
-        label: '人物を知りたい',
-        description: '経歴・スキル・得意領域を紹介しています。',
-        href: '/profile',
+        label: '相談したい',
+        description: '受託開発、業務改善、決済導入、開発伴走など、まずは状況を聞かせてください。',
+        href: '/contact',
+      },
+      {
+        label: 'プロダクトを知りたい',
+        description:
+          '学習塾向けAIチャット・生徒管理システム marubo などの取り組みを掲載しています。',
+        href: '/products',
       },
     ],
     trust: {
-      domains: ['Web 開発', 'UI/UX デザイン', '技術コンサル'],
-      techStack: ['Next.js', 'TypeScript', 'React', 'Figma'],
-      outcomes: '受託 12 件・継続率 80%',
-      githubHref: 'https://github.com/YU-Kawasaki-05',
+      domains: ['Webアプリ開発', '業務改善・AI活用', 'SaaS / MVP 開発'],
+      techStack: ['TypeScript', 'React', 'Node.js', 'AWS', 'Stripe'],
+      outcomes: '顧客理解・データ活用・継続改善を重視',
+      githubHref: 'https://github.com/YU-Kawasaki-05/Ardors-website',
     },
     nextPagesHeading: '関連ページ',
     nextPages: [
       {
         label: 'サービス紹介',
-        description: '受託・コンサルの提供内容と進め方をご覧ください。',
+        description: '受託開発・業務改善・開発伴走などの提供内容をご覧ください。',
         href: '/services',
       },
       {
-        label: 'SaaS 構想',
-        description: '取り組んでいる自社プロダクトの構想と進捗を公開しています。',
-        href: '/saas',
+        label: 'プロダクト',
+        description: 'marubo と構想中プロダクトの方針を紹介しています。',
+        href: '/products',
       },
     ],
     cta: {
-      heading: 'まずは気軽にご相談ください',
-      description: 'お見積り・ご相談は無料です。どんな小さな疑問でもお気軽にどうぞ。',
+      heading: 'まずは状況を聞かせてください',
+      description:
+        '価格や進め方は案件内容に合わせて柔軟に整理します。初回は相談ベースで問題ありません。',
       primaryCTA: '相談する',
       secondaryCTA: '実績を見る',
     },
@@ -103,19 +106,19 @@ export const jaMessages = {
     eyebrow: 'Services',
     title: '提供サービス',
     description:
-      'Web 開発・デザイン・技術コンサルを一気通貫で担当します。課題の大きさに合わせて、単発スポットから継続支援まで柔軟に対応します。',
+      '受託開発、業務改善、SaaS / MVP 開発、決済導入相談、技術相談まで、事業や現場の課題に合わせて柔軟に支援します。価格は固定で見せず、内容を聞いたうえで無理のない進め方を提案します。',
     nextPagesHeading: '関連ページ',
     nextPages: [
-      { label: '実績一覧', description: '過去の案件と成果をご覧ください。', href: '/works' },
+      { label: '実績一覧', description: '過去の案件と取り組みをご覧ください。', href: '/works' },
       {
         label: 'プロフィール',
-        description: '担当者の経歴・スキルを紹介しています。',
+        description: '担当者の経歴・考え方・スキルを紹介しています。',
         href: '/profile',
       },
     ],
     cta: {
-      heading: 'どのサービスが合うか迷ったら',
-      description: 'ご状況をお聞きした上で、最適な進め方をご提案します。まずはお気軽にどうぞ。',
+      heading: 'どの形が合うか迷ったら',
+      description: '単発相談から継続支援まで、ご状況に合わせて現実的な進め方を一緒に整理します。',
       primaryCTA: '相談する',
       secondaryCTA: '実績を見る',
     },
@@ -127,8 +130,9 @@ export const jaMessages = {
     careerHeading: '経歴',
     linksHeading: '外部リンク',
     cta: {
-      heading: '一緒に仕事をしませんか',
-      description: 'ポートフォリオ・実績にご興味があれば、お気軽にご連絡ください。',
+      heading: '価値につながる開発を一緒に進めませんか',
+      description:
+        '受託開発、業務改善、プロダクト開発の相談があれば、まずはお気軽にご連絡ください。',
       primaryCTA: '相談する',
       secondaryCTA: '実績を見る',
     },
@@ -138,7 +142,7 @@ export const jaMessages = {
     eyebrow: 'Works',
     title: '実績一覧',
     description:
-      'これまで担当したプロジェクトをご紹介します。成果軸でフィルタして、課題に近い実績をご覧ください。',
+      '公開できるプロダクト開発と、匿名化した支援実績を掲載しています。数値だけではなく、課題・対応・結果の流れが伝わるよう整理しています。',
     detailLink: '詳細を見る',
     countLabel: '件',
     empty: '該当する実績が見つかりませんでした。',
@@ -154,7 +158,7 @@ export const jaMessages = {
       nextHeading: '次に読む実績',
       cta: {
         heading: '似た課題をお持ちですか',
-        description: 'まずは状況を聞かせてください。最適な進め方をご提案します。',
+        description: 'まずは状況を聞かせてください。最適な進め方を一緒に整理します。',
         primaryCTA: '相談する',
         secondaryCTA: '実績一覧に戻る',
       },
@@ -165,20 +169,22 @@ export const jaMessages = {
       primaryCTA: '相談する',
       secondaryCTA: 'サービスを見る',
     },
-    items: WORKS,
   },
-  saas: {
-    eyebrow: 'SaaS',
-    featuresHeading: '主要機能',
-    targetUsersHeading: 'こんな方に',
+  products: {
+    eyebrow: 'Products',
+    philosophyHeading: 'プロダクトづくりの考え方',
+    productsHeading: '公開中・準備中のプロダクト',
+    plannedHeading: '構想中',
+    highlightsLabel: '主な機能・価値',
+    techStackLabel: '主な技術・連携',
     cta: {
-      heading: '興味がある・一緒に作りたい',
+      heading: 'プロダクトについて相談する',
       description:
-        '早期アクセス登録や機能のご意見もお待ちしています。開発状況の更新もお伝えします。',
-      primaryCTA: '連絡する / 登録する',
-      secondaryCTA: 'サービスを見る',
+        'marubo の利用相談や、プロダクト開発・MVPづくりの壁打ちがあればお問い合わせください。',
+      primaryCTA: '利用相談する',
+      secondaryCTA: '実績を見る',
     },
-    data: SAAS,
+    data: PRODUCTS,
   },
   contact: {
     title: 'お問い合わせ',
@@ -216,7 +222,7 @@ export const jaMessages = {
     nextLinks: [
       { label: 'トップへ', href: '/' },
       { label: '実績を見る', href: '/works' },
-      { label: 'SaaS 構想', href: '/saas' },
+      { label: 'プロダクトを見る', href: '/products' },
     ],
   },
   notFound: {

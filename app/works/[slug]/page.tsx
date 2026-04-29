@@ -95,7 +95,7 @@ export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
           mainEntityOfPage: workUrl,
           author: {
             '@type': 'Person',
-            name: 'Yuu Kawasaki',
+            name: locale === 'ja' ? 'かわさき' : 'Yu Kawasaki',
           },
           publisher: {
             '@type': 'Organization',

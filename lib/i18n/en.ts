@@ -1,10 +1,9 @@
 /** @file English messages and localized page content sources (BR-21). */
 import type { LegalDoc } from '@/data/legal/privacy'
+import type { ProductsData } from '@/data/products'
 import type { ProfileData } from '@/data/profile'
-import type { SaasData } from '@/data/saas'
 import type { ServiceItem } from '@/data/services'
 import type { Category } from '@/lib/schemas/contact'
-import type { WorkDetail } from '@/types/works'
 
 import type { Messages } from './ja'
 
@@ -15,254 +14,171 @@ const contactCategoryLabels: Record<Category, string> = {
 }
 
 const profileData: ProfileData = {
-  name: 'Yuu Kawasaki',
-  nameEn: 'Yuu Kawasaki',
-  title: 'Freelance Web Engineer / UI Designer',
-  bio: 'A freelance builder who works end-to-end from architecture to implementation. I help teams solve business problems through practical design and engineering decisions.',
+  name: 'Yu Kawasaki',
+  nameEn: 'Yu Kawasaki',
+  title: 'Building products and systems that create business value',
+  bio: 'A developer focused on understanding customer problems and turning them into useful systems and products. I work across generative AI, web development, and business process improvement, with an emphasis on data, customer experience, and practical business value rather than technology for its own sake.',
   skills: [
     {
-      category: 'Frontend',
-      items: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'HTML / CSS'],
+      category: 'Business Understanding',
+      items: ['Process improvement', 'Customer interviews', 'PoC development', 'Data usage'],
     },
     {
-      category: 'Backend',
-      items: ['Node.js', 'PostgreSQL', 'Prisma', 'REST API'],
+      category: 'Development',
+      items: ['TypeScript', 'React', 'Node.js', 'Python'],
     },
     {
-      category: 'Design',
-      items: ['Figma', 'UI Design', 'Wireframing', 'Prototyping'],
+      category: 'Platform / Integration',
+      items: ['AWS', 'PostgreSQL', 'GitHub Actions', 'Stripe'],
     },
     {
-      category: 'Infra / Tooling',
-      items: ['Vercel', 'AWS', 'Docker', 'GitHub Actions'],
+      category: 'AI / Automation',
+      items: ['Generative AI', 'Playwright', 'mabl', 'Test automation'],
     },
   ],
   career: [
     {
-      period: '2024 – Present',
-      role: 'Freelance Web Engineer / Designer',
-      organization: 'Ardors (Sole Proprietorship)',
+      period: '2026.3 – Present',
+      role: 'Acceptance Test Automation Support',
+      organization: 'Prime-listed company B, infrastructure industry',
       description:
-        'Providing web development, UI design, and technical consulting for startups and SMBs.',
+        'Supporting acceptance test automation for a new application development project using Playwright, mabl, JavaScript, and APIs. The work focuses on reducing manual effort and dependency on individual know-how while coordinating with implementation teams and tool vendors.',
     },
     {
-      period: '2020 – 2024',
-      role: 'Web Engineer',
-      organization: 'fouryou',
+      period: '2025.7 – Present',
+      role: 'marubo Development and Sales Preparation',
+      organization: 'Personal product',
       description:
-        'Delivered frontend architecture and implementation, covering planning, development, and iterative improvements.',
+        'Developing marubo, an AI chat and student management system for cram schools. I handle interviews, design, development, and testing to make AI usage safer and more manageable in education settings.',
+    },
+    {
+      period: '2024.4 – 2025.6',
+      role: 'AI / IT Consultant',
+      organization: 'Prime-listed company A, pharmaceutical industry',
+      description:
+        'Worked on AI adoption, process improvement, PoC development, internal communications, and consultation around business systems and operations. One PoC for process improvement was evaluated and moved into an internal system implementation.',
     },
   ],
-  githubHref: 'https://github.com/YU-Kawasaki-05',
-  noteHref: 'https://note.com/ardors',
+  githubHref: 'https://github.com/YU-Kawasaki-05/Ardors-website',
+  xHref: 'https://x.com/foooten_',
 }
 
 const serviceItems: ServiceItem[] = [
   {
-    id: 'web-development',
-    name: 'Web Development',
-    tagline: 'Websites and apps built with Next.js and TypeScript',
+    id: 'web-app-development',
+    name: 'Web App / Business System Development',
+    tagline: 'Admin tools and web applications shaped around real workflows',
     description:
-      'From marketing sites to authenticated web apps, I design and build production-ready systems with performance, accessibility, and maintainability as defaults.',
+      'I clarify user flows and business requirements, then build practical web apps and admin systems. Support can start from a small PoC and continue into iterative product improvement.',
     deliverables: [
-      'Frontend architecture and implementation (Next.js / React)',
-      'API design and backend integration',
-      'Responsive implementation and performance tuning',
-      'Deployment and CI/CD setup on Vercel / AWS',
+      'Requirements, screen flow, and data design',
+      'Implementation with Next.js / React / TypeScript',
+      'API, database, and external service integration',
+      'Post-release improvement discussion and light operations support',
     ],
-    priceNote: 'From JPY 500,000 (depends on scope and complexity)',
-    ctaLabel: 'Discuss Web Development',
+    ctaLabel: 'Discuss development',
     ctaHref: '/contact',
   },
   {
-    id: 'ui-ux-design',
-    name: 'UI/UX Design',
-    tagline: 'Design, prototyping, and implementation driven by Figma',
+    id: 'business-improvement',
+    name: 'Business Process Improvement',
+    tagline: 'Turning AI and automation into workflows people can actually use',
     description:
-      'I design information structure, wireframes, and interface systems around user goals. Design intent stays intact because implementation is handled in the same workflow.',
+      'Rather than introducing AI tools in isolation, I organize workflows, data, and operations together. The focus is on PoCs, internal documentation, and processes that can take root in the team.',
     deliverables: [
-      'Information architecture and wireframe design',
-      'Visual and component design in Figma',
-      'Interactive prototypes',
-      'Design system and style guide setup',
+      'Workflow interviews and improvement point mapping',
+      'AI / automation PoC design and implementation',
+      'Internal explanation and operation documents',
+      'Effect review and next improvement planning',
     ],
-    priceNote: 'From JPY 200,000 (depends on deliverable scope)',
-    ctaLabel: 'Discuss UI/UX Design',
+    ctaLabel: 'Discuss process improvement',
     ctaHref: '/contact',
   },
   {
-    id: 'tech-consulting',
-    name: 'Technical Consulting',
-    tagline: 'Technology choices, architecture review, and process improvement',
+    id: 'saas-mvp-support',
+    name: 'SaaS / MVP Development Support',
+    tagline: 'Turning an idea into a product that can be validated',
     description:
-      'I support high-impact technical decisions, from architecture and code quality to CI/CD practices and team enablement.',
+      'I help narrow the value proposition and user experience into an MVP that can be tested. My own product work also helps me support business-side uncertainty, not just implementation tasks.',
     deliverables: [
-      'Architecture and technology selection review',
-      'Code review and quality criteria definition',
-      'Development workflow and CI/CD optimization',
-      'Technical workshops and documentation support',
+      'Product hypothesis and feature scope organization',
+      'MVP scope design',
+      'Authentication, admin screens, and core feature implementation',
+      'Post-release improvement and operations discussion',
     ],
-    priceNote: 'Spot support from JPY 30,000 / Monthly advisory from JPY 100,000',
-    ctaLabel: 'Discuss Consulting',
+    ctaLabel: 'Discuss MVP development',
     ctaHref: '/contact',
   },
   {
-    id: 'saas-development',
-    name: 'SaaS Product Support',
-    tagline: 'From product planning to MVP delivery',
+    id: 'stripe-consultation',
+    name: 'Stripe / Payment Setup Consultation',
+    tagline: 'Planning payment flows and subscriptions for small validation cycles',
     description:
-      'I support SaaS launches end-to-end, including planning, implementation, and deployment foundations.',
+      'I can discuss Stripe-based payment flows and subscription design. Implementation is handled carefully based on requirements, including terms, refund/cancellation flow, and operational processes around payment.',
     deliverables: [
-      'Product requirement definition and planning support',
-      'MVP implementation across frontend and backend',
-      'Authentication and multitenancy architecture',
-      'Post-release operations and iterative improvements',
+      'Payment flow and pricing structure discussion',
+      'Stripe Checkout and subscription setup consultation',
+      'Refund, cancellation, and operation flow planning',
+      'Step-by-step introduction into existing products',
     ],
-    priceNote: 'Custom quote based on scope and schedule',
-    ctaLabel: 'Discuss SaaS Development',
+    ctaLabel: 'Discuss payments',
+    ctaHref: '/contact',
+  },
+  {
+    id: 'technical-partner',
+    name: 'Technical Consultation / Development Partnering',
+    tagline: 'From technical sparring to hands-on implementation',
+    description:
+      'I help organize technology choices, implementation direction, development processes, and AI usage. Engagements can range from a single consultation to ongoing implementation support.',
+    deliverables: [
+      'Technology selection and implementation direction review',
+      'Code and design review',
+      'Development workflow setup such as GitHub Actions',
+      'Ongoing improvement discussion and implementation support',
+    ],
+    ctaLabel: 'Discuss technical support',
     ctaHref: '/contact',
   },
 ]
 
-const saasData: SaasData = {
-  name: 'Ardors Flow',
-  tagline: 'A timeboxing-first project management tool for freelancers',
+const productsData: ProductsData = {
+  title: 'Products',
   description:
-    'Ardors Flow helps freelancers with multiple projects decide what to work on today with less friction. It combines timeboxing and cold-start planning to support execution from planning to review.',
-  status: {
-    label: 'In Development',
-    intent: 'wip',
-    note: 'A prototype is currently in progress. Early access registration is open.',
-  },
-  features: [
+    'Alongside client work, I continue to identify problems and turn them into products. Starting with marubo, I practice the full cycle from customer understanding to design, development, and operations.',
+  philosophy: [
+    'Start from customer problems and implement systems people can actually use',
+    'Design around data accumulation and usage so each product can keep improving',
+    'Validate in small steps and build products that can grow over time',
+  ],
+  products: [
     {
-      title: 'Timebox Planning',
+      id: 'marubo',
+      name: 'marubo',
+      tagline: 'AI chat and student management system for cram schools',
       description:
-        'Split your day into focused blocks and visualize commitment per project, so deep work survives interruptions.',
-    },
-    {
-      title: 'Cold-Start Workflow',
-      description:
-        'Generate kickoff templates for new projects to reduce uncertainty about first actions.',
-    },
-    {
-      title: 'Project Progress Dashboard',
-      description:
-        'Track progress, time usage, and next actions across multiple projects in one screen.',
-    },
-    {
-      title: 'Weekly Review & Planning',
-      description:
-        'Run weekly reflection and planning as one workflow to keep improvement cycles consistent.',
+        'marubo helps students at cram schools use AI safely and effectively for learning, while enabling schools to understand and monitor students’ learning progress and AI usage. It started from development in a real education setting, and I handle interviews, design, development, and testing.',
+      status: { label: 'In development / sales preparation', intent: 'wip' },
+      highlights: [
+        'AI chat for learning support',
+        'Student management and usage visibility',
+        'Learning analysis and report generation',
+        'Administrative design for safer AI usage in education',
+      ],
+      techStack: ['Next.js', 'TypeScript', 'Supabase', 'Resend', 'AI API', 'Stripe (planned)'],
+      ctaLabel: 'Discuss usage',
+      ctaHref: '/contact',
     },
   ],
-  targetUsers: [
+  plans: [
     {
-      persona: 'Freelance engineers and designers',
+      label: 'Unnamed product concept',
       description:
-        'People juggling three or more projects who lose time deciding priorities every day.',
-    },
-    {
-      persona: 'Directors in small production teams',
-      description:
-        'Teams that want simpler scheduling and assignment flow without enterprise-weight tooling.',
-    },
-    {
-      persona: 'Solo business owners',
-      description: 'People who need a lightweight project system instead of a complex PM suite.',
+        'I am exploring small products connected to process improvement, data usage, and customer experience. The name and detailed specification are intentionally not fixed yet; the next step is to validate needs against real operational problems.',
+      status: { label: 'Concept stage', intent: 'planned' },
+      themes: ['Process improvement', 'Data usage', 'Customer experience', 'AI usage'],
     },
   ],
-  ctaHref: '/contact',
 }
-
-const worksData: WorkDetail[] = [
-  {
-    slug: 'corporate-site-renewal',
-    title: 'Corporate Website Renewal',
-    category: 'Web Development',
-    summary:
-      'Rebuilt an aging corporate site with Next.js and improved both performance and conversion rate.',
-    outcomes: ['Conversion Improvement', 'Performance Improvement'],
-    publishedAt: '2024-09',
-    published: true,
-    problem:
-      'A WordPress site built years ago had become slow and difficult to maintain. Poor mobile experience was also reducing conversion over time.',
-    solution:
-      'Rebuilt the entire site using Next.js and Tailwind CSS. Applied SSG-first rendering, image optimization, and code splitting, and moved content editing to a headless CMS workflow.',
-    result:
-      'Improved LCP from 5.2s to 1.4s and raised conversion from 1.2% to 2.1% within two months after release.',
-    techStack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Vercel', 'Headless CMS'],
-    nextWorks: ['ec-ux-improvement', 'internal-ops-system'],
-  },
-  {
-    slug: 'ec-ux-improvement',
-    title: 'E-commerce UX Improvement',
-    category: 'UI/UX Design',
-    summary:
-      'Simplified checkout and refreshed key UI flows to improve purchase completion and reduce bounce.',
-    outcomes: ['Purchase Rate Improvement', 'Bounce Rate Reduction'],
-    publishedAt: '2024-06',
-    published: true,
-    problem:
-      'Mobile users were dropping during checkout. Interviews and behavior analysis pointed to unnecessary friction in the purchase flow.',
-    solution:
-      'Reduced the checkout flow from five steps to three, then redesigned mobile-first UI and delivered implementation in collaboration with engineering.',
-    result:
-      'Purchase completion improved from 2.3% to 3.8%, and mobile bounce rate decreased from 68% to 45%.',
-    techStack: ['Figma', 'React', 'Tailwind CSS'],
-    nextWorks: ['corporate-site-renewal', 'saas-mvp'],
-  },
-  {
-    slug: 'internal-ops-system',
-    title: 'Internal Operations System Development',
-    category: 'Web Development',
-    summary:
-      'Replaced spreadsheet-driven operations with a dedicated internal system from frontend to database design.',
-    outcomes: ['Operational Efficiency', 'Error Reduction'],
-    publishedAt: '2024-03',
-    published: true,
-    problem:
-      'A 30-person production team relied on spreadsheets and ad-hoc communication, which reduced visibility and caused frequent rework.',
-    solution:
-      'Built a dedicated operations app with project, member, and progress management. Implemented with Next.js, PostgreSQL, and Prisma, plus notification and role-based access control.',
-    result:
-      'Weekly progress-management effort dropped from about three hours to one, and human-error-related rework decreased by over 90%.',
-    techStack: ['Next.js', 'TypeScript', 'PostgreSQL', 'Prisma', 'Vercel'],
-    nextWorks: ['saas-mvp', 'corporate-site-renewal'],
-  },
-  {
-    slug: 'saas-mvp',
-    title: 'SaaS MVP Delivery Support',
-    category: 'SaaS Development',
-    summary:
-      'Supported a startup team from scope definition to release and delivered an MVP in three months.',
-    outcomes: ['MVP Launch', 'Early User Acquisition'],
-    publishedAt: '2023-12',
-    published: true,
-    problem:
-      'The team needed to validate the market quickly without an in-house engineering setup, and MVP scope had to be defined carefully.',
-    solution:
-      'Narrowed requirements to five critical user flows, then ran weekly demos and feedback loops while handling implementation and infrastructure.',
-    result:
-      'Released within three months, acquired 100 active users in the first month, and recorded a 60% retention rate.',
-    techStack: ['Next.js', 'TypeScript', 'PostgreSQL', 'Stripe', 'AWS'],
-    nextWorks: ['internal-ops-system', 'ec-ux-improvement'],
-  },
-  {
-    slug: 'tech-consulting-nda',
-    title: 'Technical Consulting (NDA)',
-    category: 'Technical Consulting',
-    summary: 'Confidential project under NDA.',
-    outcomes: ['Process Improvement'],
-    publishedAt: '2023-09',
-    published: false,
-    problem: 'NDA',
-    solution: 'NDA',
-    result: 'NDA',
-    techStack: [],
-    nextWorks: [],
-  },
-]
 
 const privacyDoc: LegalDoc = {
   title: 'Privacy Policy',
@@ -350,8 +266,8 @@ const tokushohoDoc: LegalDoc = {
   title: 'Legal Notice (Specified Commercial Transactions Act)',
   updatedAt: '2026-04-15',
   sections: [
-    { heading: 'Business Name', body: 'Ardors (Sole Proprietorship)' },
-    { heading: 'Representative', body: 'Yuu Kawasaki' },
+    { heading: 'Business Name', body: 'Ardors' },
+    { heading: 'Representative', body: 'Yu Kawasaki' },
     {
       heading: 'Address',
       body: 'Disclosed without delay upon valid request under applicable law.',
@@ -363,11 +279,11 @@ const tokushohoDoc: LegalDoc = {
     { heading: 'Email', body: 'Please contact us through the inquiry form.' },
     {
       heading: 'Service Fees',
-      body: 'Please refer to each service page for indicative pricing. Formal quotations are provided individually.',
+      body: 'Fees are quoted individually after confirming the project scope and requirements.',
     },
     {
       heading: 'Payment Method',
-      body: 'Bank transfer (invoice-based). Detailed terms are provided at contract signing.',
+      body: 'Bank transfer or other method agreed upon separately. Detailed terms are provided at contract signing.',
     },
     {
       heading: 'Payment Timing',
@@ -415,79 +331,86 @@ export const enMessages: Messages = {
     ariaLabel: 'Trust block',
     domains: 'Domains',
     techStack: 'Tech Stack',
-    outcomes: 'Outcomes',
+    outcomes: 'Working Focus',
     github: 'GitHub',
   },
   home: {
     hero: {
-      target: 'Freelance Delivery / Technical Consulting',
-      title: 'Design and engineering,\nworking together for business growth.',
+      target: 'Client development / process improvement / product building',
+      title: 'Turning the next business move\ninto working systems.',
       description:
-        'From planning to implementation and iteration, Ardors supports product and website execution end to end.',
-      primaryCTA: 'Talk to Us',
-      secondaryCTA: 'View Works',
+        'I combine web development, AI usage, and process improvement to turn customer problems into useful products and systems. The focus is not just technology, but how the work is used and how it creates value.',
+      primaryCTA: 'View Works',
+      primaryHref: '/works',
+      secondaryCTA: 'Contact',
+      secondaryHref: '/contact',
     },
     entryBranches: [
       {
-        label: 'Need Consultation',
-        description: 'Share your challenge and we will define practical next steps together.',
-        href: '/contact',
-      },
-      {
-        label: 'View Case Studies',
-        description: 'Review projects organized by problem, solution, and measurable outcomes.',
+        label: 'View Works',
+        description:
+          'See marubo, the Ardors website, AI/IT consulting, and acceptance test automation work.',
         href: '/works',
       },
       {
-        label: 'See the Profile',
-        description: 'Check background, strengths, and technical focus areas.',
-        href: '/profile',
+        label: 'Start a Conversation',
+        description:
+          'For development, process improvement, payments, or technical partnering, share your current situation first.',
+        href: '/contact',
+      },
+      {
+        label: 'Explore Products',
+        description:
+          'Read about marubo, an AI chat and student management system for cram schools, and future product concepts.',
+        href: '/products',
       },
     ],
     trust: {
-      domains: ['Web Development', 'UI/UX Design', 'Technical Consulting'],
-      techStack: ['Next.js', 'TypeScript', 'React', 'Figma'],
-      outcomes: '12 delivered projects / 80% retention',
-      githubHref: 'https://github.com/YU-Kawasaki-05',
+      domains: ['Web app development', 'Process improvement / AI', 'SaaS / MVP development'],
+      techStack: ['TypeScript', 'React', 'Node.js', 'AWS', 'Stripe'],
+      outcomes: 'Focused on customer understanding, data usage, and continuous improvement',
+      githubHref: 'https://github.com/YU-Kawasaki-05/Ardors-website',
     },
     nextPagesHeading: 'Related Pages',
     nextPages: [
       {
         label: 'Services',
-        description: 'See delivery scope, workflows, and support options.',
+        description: 'See support options for development, process improvement, and partnering.',
         href: '/services',
       },
       {
-        label: 'SaaS Vision',
-        description: 'Read the product concept and current progress.',
-        href: '/saas',
+        label: 'Products',
+        description: 'Read about marubo and future product directions.',
+        href: '/products',
       },
     ],
     cta: {
-      heading: 'Let’s start with a quick discussion',
-      description: 'Consultation and estimates are free. Feel free to reach out with any question.',
-      primaryCTA: 'Talk to Us',
+      heading: 'Start by sharing your situation',
+      description:
+        'Scope, budget, and process can be adjusted based on the project. A first conversation is enough to begin.',
+      primaryCTA: 'Contact',
       secondaryCTA: 'View Works',
     },
   },
   services: {
     eyebrow: 'Services',
-    title: 'What We Offer',
+    title: 'Services',
     description:
-      'A practical combination of web development, design, and technical consulting. Support ranges from focused engagements to ongoing collaboration.',
+      'Flexible support for client development, business process improvement, SaaS / MVP development, payment setup consultation, and technical partnering. Pricing is intentionally not fixed on the site; the right scope is discussed after understanding the situation.',
     nextPagesHeading: 'Related Pages',
     nextPages: [
-      { label: 'Case Studies', description: 'Browse past projects and outcomes.', href: '/works' },
+      { label: 'Works', description: 'Browse projects and activities.', href: '/works' },
       {
         label: 'Profile',
-        description: 'See background, skills, and working style.',
+        description: 'See background, working style, and skills.',
         href: '/profile',
       },
     ],
     cta: {
-      heading: 'Not sure which service fits your needs?',
-      description: 'After understanding your context, we will propose the most effective approach.',
-      primaryCTA: 'Talk to Us',
+      heading: 'Not sure what kind of support fits?',
+      description:
+        'From a one-off discussion to ongoing implementation support, we can define a realistic path based on your context.',
+      primaryCTA: 'Contact',
       secondaryCTA: 'View Works',
     },
     items: serviceItems,
@@ -498,17 +421,19 @@ export const enMessages: Messages = {
     careerHeading: 'Career',
     linksHeading: 'External Links',
     cta: {
-      heading: 'Let’s work together',
-      description: 'If the portfolio matches your needs, feel free to get in touch.',
-      primaryCTA: 'Talk to Us',
+      heading: 'Let’s build toward business value',
+      description:
+        'If you want to discuss client development, process improvement, or product building, feel free to reach out.',
+      primaryCTA: 'Contact',
       secondaryCTA: 'View Works',
     },
     data: profileData,
   },
   works: {
     eyebrow: 'Works',
-    title: 'Case Studies',
-    description: 'Explore completed projects and filter by outcome tags to find relevant examples.',
+    title: 'Works',
+    description:
+      'A mix of public product work and anonymized support cases. Each case is organized around the problem, approach, and result rather than only headline numbers.',
     detailLink: 'View Details',
     countLabel: 'items',
     empty: 'No case studies match the selected filter.',
@@ -524,31 +449,34 @@ export const enMessages: Messages = {
       nextHeading: 'Read Next',
       cta: {
         heading: 'Facing a similar challenge?',
-        description: 'Share your current context and we will suggest the next practical steps.',
-        primaryCTA: 'Talk to Us',
+        description:
+          'Share your current context and we can organize the next practical step together.',
+        primaryCTA: 'Contact',
         secondaryCTA: 'Back to Works',
       },
     },
     cta: {
       heading: 'Facing a similar challenge?',
-      description: 'If one of these projects looks close to your case, feel free to reach out.',
-      primaryCTA: 'Talk to Us',
+      description: 'If one of these cases looks close to your situation, feel free to reach out.',
+      primaryCTA: 'Contact',
       secondaryCTA: 'View Services',
     },
-    items: worksData,
   },
-  saas: {
-    eyebrow: 'SaaS',
-    featuresHeading: 'Core Features',
-    targetUsersHeading: 'Who It Is For',
+  products: {
+    eyebrow: 'Products',
+    philosophyHeading: 'Product Philosophy',
+    productsHeading: 'Published / In-Progress Products',
+    plannedHeading: 'In Planning',
+    highlightsLabel: 'Main Features / Value',
+    techStackLabel: 'Tech / Integrations',
     cta: {
-      heading: 'Interested in joining early?',
+      heading: 'Discuss products or product development',
       description:
-        'We welcome early access requests and product feedback while the prototype is evolving.',
-      primaryCTA: 'Contact / Join Waitlist',
-      secondaryCTA: 'View Services',
+        'Reach out if you want to discuss marubo usage, product development, or MVP planning.',
+      primaryCTA: 'Discuss usage',
+      secondaryCTA: 'View Works',
     },
-    data: saasData,
+    data: productsData,
   },
   contact: {
     title: 'Contact',
@@ -584,8 +512,8 @@ export const enMessages: Messages = {
     nextHeading: 'Recommended Next Pages',
     nextLinks: [
       { label: 'Home', href: '/' },
-      { label: 'Case Studies', href: '/works' },
-      { label: 'SaaS Vision', href: '/saas' },
+      { label: 'View Works', href: '/works' },
+      { label: 'View Products', href: '/products' },
     ],
   },
   notFound: {
@@ -597,7 +525,7 @@ export const enMessages: Messages = {
     quickLinksAria: 'Quick links',
     quickLinks: [
       { label: 'Services', href: '/services' },
-      { label: 'Case Studies', href: '/works' },
+      { label: 'Works', href: '/works' },
       { label: 'Profile', href: '/profile' },
       { label: 'Contact', href: '/contact' },
     ],

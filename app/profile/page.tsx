@@ -26,7 +26,7 @@ export default async function ProfilePage() {
   const t = getMessages(locale).profile
   const profile = t.data
   const profileUrl = toAbsoluteUrl(localizeHref(locale, '/profile'))
-  const sameAs = [profile.githubHref, profile.noteHref].filter(
+  const sameAs = [profile.githubHref, profile.xHref, profile.noteHref].filter(
     (link): link is string => typeof link === 'string' && link.length > 0,
   )
 
@@ -122,6 +122,16 @@ export default async function ProfilePage() {
               >
                 Note
                 <span aria-hidden="true">↗</span>
+              </a>
+            )}
+            {profile.xHref && (
+              <a
+                href={profile.xHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-10 items-center gap-2 rounded-xl border border-zinc-300 bg-white px-5 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2"
+              >
+                X<span aria-hidden="true">↗</span>
               </a>
             )}
           </div>

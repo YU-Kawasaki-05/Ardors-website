@@ -27,7 +27,7 @@ describe('works-store', () => {
     const works = await listPublicWorks('ja')
 
     expect(readFileMock).toHaveBeenCalledWith(expect.stringContaining('data/works.json'), 'utf8')
-    expect(works.map((work) => work.slug)).toContain('corporate-site-renewal')
+    expect(works.map((work) => work.slug)).toContain('marubo')
   })
 
   it('rethrows non-missing file errors', async () => {

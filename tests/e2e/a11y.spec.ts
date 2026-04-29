@@ -7,8 +7,8 @@ const PUBLIC_PATHS = [
   '/ja/services',
   '/ja/profile',
   '/ja/works',
-  '/ja/works/corporate-site-renewal',
-  '/ja/saas',
+  '/ja/works/marubo',
+  '/ja/products',
   '/ja/contact',
   '/ja/contact/complete',
   '/ja/privacy',
@@ -82,6 +82,13 @@ test('contact form fields are reachable with Tab in a logical order', async ({ p
 
   await page.keyboard.press('Tab')
   await expect(page.getByRole('button', { name: '送信する' })).toBeFocused()
+})
+
+test('legacy saas route redirects to products', async ({ page }) => {
+  await page.goto('/ja/saas')
+
+  await expect(page).toHaveURL(/\/ja\/products$/)
+  await expect(page.getByRole('heading', { name: 'プロダクト', exact: true })).toBeVisible()
 })
 
 function getSkippedHeading(headings: HeadingInfo[]): HeadingInfo | null {

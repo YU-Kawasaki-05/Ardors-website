@@ -76,10 +76,10 @@ export const NAV_ITEMS: NavItem[] = [
     showInFooter: false,
   },
   {
-    key: 'saas',
+    key: 'products',
     screenId: 'SCR-06',
-    href: '/saas',
-    label: { ja: 'SaaS構想', en: 'SaaS' },
+    href: '/products',
+    label: { ja: 'プロダクト', en: 'Products' },
     showInHeader: true,
     showInFooter: true,
     footerGroup: 'main',

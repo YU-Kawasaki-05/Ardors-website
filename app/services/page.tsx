@@ -33,7 +33,6 @@ function ServiceCard({ locale, service }: { locale: Locale; service: ServiceItem
       </ul>
 
       <div className="mt-auto pt-6">
-        <p className="mb-4 text-xs text-zinc-600">{service.priceNote}</p>
         <Link
           href={localizeHref(locale, service.ctaHref)}
           className="inline-flex h-10 items-center justify-center rounded-xl bg-indigo-600 px-5 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"

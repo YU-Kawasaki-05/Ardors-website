@@ -8,7 +8,7 @@ const PUBLIC_PATHS = [
   '/services',
   '/works',
   '/profile',
-  '/saas',
+  '/products',
   '/contact',
   '/privacy',
   '/terms',

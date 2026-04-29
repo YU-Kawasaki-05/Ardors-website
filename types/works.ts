@@ -6,7 +6,7 @@
  */
 
 export type Work = {
-  /** URL-safe identifier used as the route slug (e.g. "corporate-site-renewal"). */
+  /** URL-safe identifier used as the route slug (e.g. "marubo"). */
   slug: string
   /** Display title of the case study. */
   title: string

@@ -12,8 +12,8 @@ test('empty contact submission shows required field errors', async ({ page }) =>
   await expect(page.getByText('メッセージを入力してください')).toBeVisible()
 })
 
-test('unpublished work detail returns 404', async ({ page }) => {
-  const response = await page.goto('/works/tech-consulting-nda')
+test('missing work detail returns 404', async ({ page }) => {
+  const response = await page.goto('/works/not-published-case')
 
   expect(response?.status()).toBe(404)
   await expect(page.getByRole('heading', { name: 'ページが見つかりません' })).toBeVisible()

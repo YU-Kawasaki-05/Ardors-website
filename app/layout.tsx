@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     default: 'Ardors',
     template: '%s | Ardors',
   },
-  description: 'フリーランス Web 開発者・デザイナーの Ardors ポートフォリオ',
+  description: '事業に役立つWeb開発・業務改善・プロダクトづくりを支援する Ardors のポートフォリオ',
   openGraph: {
     type: 'website',
     locale: 'ja_JP',
